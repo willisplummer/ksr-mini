@@ -4,7 +4,6 @@ class CreateProject
 			p = Project.new({ name: name, goal: goal.to_i })
 			PROJECTS << p
 			puts "Added #{p.name} project with target of $#{p.goal}"
-			puts PROJECTS
 		end
 	end
 

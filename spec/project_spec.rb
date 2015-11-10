@@ -31,18 +31,24 @@ describe "Backing" do
 
 	describe "add method" do
 		before  :each do
-			subject.add(150, "JOE")
+			subject.add(500, "JOE")
 		end
 		describe "#raised" do
 			it "returns the correct value" do
-				expect(subject.raised).to eq(150)
+				expect(subject.raised).to eq(500)
 			end
 		end
-		describe "#raised" do
+		describe "#backings" do
 			it "returns the correct value" do
-				expect(subject.backings).to eq([ {user: "JOE", amount: 150} ])
+				expect(subject.backings).to eq([ {user: "JOE", amount: 500} ])
 			end
 		end
+		
+		# describe "#successful?" do
+		# 	it "knows the project has succeeded" do
+		# 		expect(subject.successful?).to be true
+		# 	end
+		# end
 	end
 
 	

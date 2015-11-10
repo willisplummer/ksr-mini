@@ -5,8 +5,6 @@
 # - REFACTORRRRR
 # - database? unnecessary?
 # - help section
-PROJECTS = []
-BACKINGS = []
 
 require 'rubygems'
 require 'bundler/setup'
@@ -14,6 +12,11 @@ require "./models/backing.rb"
 require "./models/project.rb"
 require "./behaviors/create_project.rb"
 require "./behaviors/create_backing.rb"
+require "./behaviors/list_project_backings.rb"
+require "./behaviors/list_user_backings.rb"
+
+PROJECTS = []
+BACKINGS = []
 
 class App
 	def initialize
@@ -32,37 +35,19 @@ class App
 				when "back"
 					CreateBacking.perform(input_split[1], input_split[2], input_split[3], input_split[4])
 				when "list"
-					contains = false
-					PROJECTS.each do |i, v|
-						if v.name == input_split[1]
-							contains = true
-							p = v
-							p.backings.each do |i, v|
-								puts "-- #{v[:user]} backed for $#{v[:amount]}"
-							end
-						end
-					end
-					if contains
-						p.successful?
-					else
-						puts "ERROR: project does not exist"
-					end
+					ListProjectBackings.perform(input_split[1])
 				when "backer"
-					name = input_split[1]
-					contains = false
-					BACKINGS.each do |i, v|
-						if v.name == name
-							contains = true
-							puts "-- Backed #{v.project} for $#{v.amount}"
-						end
-					end
-					unless contains
-						puts "ERROR: backer does not exist"
-					end
+					ListUserBackings.perform(input_split[1])
+				when "help"
+					puts "please use one of the following commands:\n\n"
+					puts "project <project> <target amount>"
+					puts "back <given name> <project> <credit card number> <backing amount>"
+					puts "list <project>"
+					puts "backer <given name>"
 				when "exit"
 					break
 				else
-					puts "ERROR: invalid request"
+					puts "ERROR: invalid request. type help for more info."
 				end
 			end
 		end
