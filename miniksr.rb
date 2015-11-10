@@ -1,19 +1,13 @@
 # TO DO:
-# - SHOULD BE ABLE TO BACK IN CENTS
-# - can't back for negative money
-# - TESTS
-# - REFACTORRRRR
-# - database? unnecessary?
-# - help section
+# - tests
+# - Should be able to back in dollars and cents
+# - Shouldn't be able to back for negative money
+# - More refactoring
 
 require 'rubygems'
 require 'bundler/setup'
-require "./models/backing.rb"
-require "./models/project.rb"
-require "./behaviors/create_project.rb"
-require "./behaviors/create_backing.rb"
-require "./behaviors/list_project_backings.rb"
-require "./behaviors/list_user_backings.rb"
+Dir[File.dirname(__FILE__) + '/models/*.rb'].each {|file| require file }
+Dir[File.dirname(__FILE__) + '/behaviors/*.rb'].each {|file| require file }
 
 PROJECTS = []
 BACKINGS = []
@@ -31,11 +25,26 @@ class App
 				input_split = input.split(" ")
 				case input_split[0].downcase
 				when "project"
-					CreateProject.perform(input_split[1], input_split[2])
+					if get_project(input_split[1]).nil?
+						CreateProject.perform(input_split[1], input_split[2])
+					else
+						puts "ERROR: project name already taken"
+						next
+					end
 				when "back"
-					CreateBacking.perform(input_split[1], input_split[2], input_split[3], input_split[4])
+					project = get_project(input_split[2])
+					if project.nil?
+						puts "ERROR: project does not exist"
+						next
+					end
+					CreateBacking.perform(input_split[1], project, input_split[3], input_split[4])
 				when "list"
-					ListProjectBackings.perform(input_split[1])
+					project = get_project(input_split[1])
+					if project.nil?
+						puts "ERROR: project does not exist"
+						next
+					end
+					ListProjectBackings.perform(project)
 				when "backer"
 					ListUserBackings.perform(input_split[1])
 				when "help"
@@ -51,5 +60,14 @@ class App
 				end
 			end
 		end
+	end
+
+	def get_project(project)
+		PROJECTS.each do |v|
+			if v.name == project
+				return v
+			end
+		end	
+		return nil
 	end
 end

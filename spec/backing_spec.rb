@@ -26,6 +26,5 @@ describe "Backing" do
 				expect(subject.amount).to eq("100")
 			end
 		end
-
 	end
 end

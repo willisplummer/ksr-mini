@@ -1,12 +1,11 @@
 class CreateBacking
 	def self.perform(name, project, cc, amount)
-		p = get_project(project)
-		if valid_length?(name) && valid_cc?(cc) && luhn?(cc) && unique_cc?(name, cc) && !p.nil?
-			b = Backing.new({ name: name, project: project, cc: cc.to_i, amount: amount.to_i })
-			p.add(amount.to_i, name)
+		if valid_length?(name) && valid_cc?(cc) && luhn?(cc) && unique_cc?(name, cc)
+			b = Backing.new({ name: name, project: project.name, cc: cc.to_i, amount: amount.to_i })
+			project.add(amount.to_i, name)
 			BACKINGS << b
 			puts "#{b.name} backed project #{b.project} for $#{b.amount}"
-			puts "#{p.name} has now raised $#{p.raised} of $#{p.goal}"
+			puts "#{project.name} has now raised $#{project.raised} of $#{project.goal}"
 		end
 	end
 
@@ -34,16 +33,6 @@ class CreateBacking
 				return false
 			end
 		end
-	end
-
-	def self.get_project(project)
-		PROJECTS.each do |v|
-			if v.name == project
-				return v
-			end
-		end	
-		puts "ERROR: project does not exist"
-		return nil
 	end
 
 	def self.luhn?(cc)
