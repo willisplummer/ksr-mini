@@ -1,6 +1,7 @@
 class CreateBacking
 	def self.perform(name, project, cc, amount)
-		if valid_length?(name) && valid_cc?(cc) && luhn?(cc) && unique_cc?(name, cc) && pledge_valid?(amount) && valid_cents(amount)
+		if valid_length?(name) && valid_cc?(cc) && luhn?(cc) && unique_cc?(name, cc) && pledge_valid?(amount) && valid_cents(amount) && App.project_exists?(project)
+			project = App.get_project(project)
 			b = Backing.new({ name: name, project: project.name, cc: cc.to_i, amount: amount.to_f })
 			project.add(amount.to_f, name)
 			BACKINGS << b

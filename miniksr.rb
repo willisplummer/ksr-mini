@@ -24,26 +24,11 @@ class App
 				input_split = input.split(" ")
 				case input_split[0].downcase
 				when "project"
-					if get_project(input_split[1]).nil?
-						CreateProject.perform(input_split[1], input_split[2])
-					else
-						puts "ERROR: project name already taken"
-						next
-					end
+					CreateProject.perform(input_split[1], input_split[2])
 				when "back"
-					project = get_project(input_split[2])
-					if project.nil?
-						puts "ERROR: project does not exist"
-						next
-					end
-					CreateBacking.perform(input_split[1], project, input_split[3], input_split[4])
+					CreateBacking.perform(input_split[1], input_split[2], input_split[3], input_split[4])
 				when "list"
-					project = get_project(input_split[1])
-					if project.nil?
-						puts "ERROR: project does not exist"
-						next
-					end
-					ListProjectBackings.perform(project)
+					ListProjectBackings.perform(input_split[1])
 				when "backer"
 					ListUserBackings.perform(input_split[1])
 				when "help"
@@ -61,12 +46,21 @@ class App
 		end
 	end
 
-	def get_project(project)
+	def self.get_project(project)
 		PROJECTS.each do |v|
 			if v.name == project
 				return v
 			end
 		end	
 		return nil
+	end
+
+	def self.project_exists?(project)
+		unless get_project(project).nil?
+			true
+		else
+			puts "ERROR: project does not exist"
+			false
+		end
 	end
 end

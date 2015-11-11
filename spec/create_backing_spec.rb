@@ -9,7 +9,7 @@ describe "Create Backing" do
 
 	context "when all is correct" do
 		before (:each) do
-			CreateBacking.perform("USER", PROJECTS[0], "79927398713", "150")
+			CreateBacking.perform("USER", "TEST", "79927398713", "150")
 		end
 		it "creates a new backing" do
 			expect(BACKINGS[0]).not_to be_nil 
@@ -18,7 +18,7 @@ describe "Create Backing" do
 
 	context "when CC is too long" do
 		before (:each) do
-			CreateBacking.perform("USER", PROJECTS[0], "79927398713567890123445", "150")
+			CreateBacking.perform("USER", "TEST", "79927398713567890123445", "150")
 		end
 		it "does not create a new backing" do
 			expect(BACKINGS[0]).to be_nil 
@@ -27,7 +27,7 @@ describe "Create Backing" do
 
 	context "when CC contains letters" do
 		before (:each) do
-			CreateBacking.perform("USER", PROJECTS[0], "7992T7398713", "150")
+			CreateBacking.perform("USER", "TEST", "7992T7398713", "150")
 		end
 		it "does not create a new backing" do
 			expect(BACKINGS[0]).to be_nil 
@@ -36,7 +36,7 @@ describe "Create Backing" do
 
 	context "when CC does not pass Luhn-10" do
 		before (:each) do
-			CreateBacking.perform("USER", PROJECTS[0], "79927398714", "150")
+			CreateBacking.perform("USER", "TEST", "79927398714", "150")
 		end
 		it "does not create a new backing" do
 			expect(BACKINGS[0]).to be_nil 
@@ -45,7 +45,7 @@ describe "Create Backing" do
 
 	context "when user name is too short" do
 		before (:each) do
-			CreateBacking.perform("USE", PROJECTS[0], "79927398713", "150")
+			CreateBacking.perform("USE", "TEST", "79927398713", "150")
 		end
 		it "does not create a new backing" do
 			expect(BACKINGS[0]).to be_nil 
@@ -54,7 +54,7 @@ describe "Create Backing" do
 
 	context "when user name is too long" do
 		before (:each) do
-			CreateBacking.perform("THISUSERNAMEISWAYTOOLONGINSANELYLONG", PROJECTS[0], "79927398713", "150")
+			CreateBacking.perform("THISUSERNAMEISWAYTOOLONGINSANELYLONG", "TEST", "79927398713", "150")
 		end
 		it "does not create a new backing" do
 			expect(BACKINGS[0]).to be_nil 
@@ -63,8 +63,8 @@ describe "Create Backing" do
 
 	context "when credit card has been used by another backer" do
 		before (:each) do
-			CreateBacking.perform("USER1", PROJECTS[0], "79927398713", "150")
-			CreateBacking.perform("USER2", PROJECTS[0], "79927398713", "150")
+			CreateBacking.perform("USER1", "TEST", "79927398713", "150")
+			CreateBacking.perform("USER2", "TEST", "79927398713", "150")
 		end
 		it "does not create a new backing" do
 			expect(BACKINGS[1]).to be_nil 
@@ -73,7 +73,7 @@ describe "Create Backing" do
 
 	context "when pledge is less than 0" do
 		before (:each) do
-			CreateBacking.perform("User", PROJECTS[0], "79927398713", "-10")
+			CreateBacking.perform("User", "TEST", "79927398713", "-10")
 		end
 		it "does not create a new backing" do
 			expect(BACKINGS[0]).to be_nil 
@@ -82,7 +82,7 @@ describe "Create Backing" do
 
 	context "when pledge is 0" do
 		before (:each) do
-			CreateBacking.perform("User", PROJECTS[0], "79927398713", "0")
+			CreateBacking.perform("User", "TEST", "79927398713", "0")
 		end
 		it "does not create a new backing" do
 			expect(BACKINGS[0]).to be_nil 
@@ -91,7 +91,7 @@ describe "Create Backing" do
 
 	context "when pledge amount contains non-number characters" do
 		before (:each) do
-			CreateBacking.perform("User", PROJECTS[0], "79927398713", "100$")
+			CreateBacking.perform("User", "TEST", "79927398713", "100$")
 		end
 		it "does not create a new backing" do
 			expect(BACKINGS[0]).to be_nil 
@@ -100,8 +100,8 @@ describe "Create Backing" do
 
 	context "when pledge amount contains cents" do
 		before (:each) do
-			CreateBacking.perform("User", PROJECTS[0], "79927398713", "100.25")
-			CreateBacking.perform("User2", PROJECTS[0], "49927398716", "35.50")
+			CreateBacking.perform("User", "TEST", "79927398713", "100.25")
+			CreateBacking.perform("User2", "TEST", "49927398716", "35.50")
 		end
 		it "adds them to the project's raised funds" do
 			expect(PROJECTS[0].raised).to eq(135.75) 
@@ -110,7 +110,7 @@ describe "Create Backing" do
 
 	context "when pledge amount contains three decimal places" do
 		before (:each) do
-			CreateBacking.perform("User", PROJECTS[0], "79927398713", "100.123")
+			CreateBacking.perform("User", "TEST", "79927398713", "100.123")
 		end
 		it "does not create a new backing" do
 			expect(BACKINGS[0]).to be_nil 
