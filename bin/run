@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+require "bundler"
+require "irb"
+require_relative "../miniksr.rb"
+
+app = App.new
+app.run
