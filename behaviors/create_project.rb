@@ -1,6 +1,6 @@
 class CreateProject
 	def self.perform(name, goal)
-		if valid_length?(name) && name_not_taken?(name)
+		if valid_length?(name)
 			p = Project.new({ name: name, goal: goal.to_i })
 			PROJECTS << p
 			puts "Added #{p.name} project with target of $#{p.goal}"
