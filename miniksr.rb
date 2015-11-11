@@ -1,8 +1,7 @@
 # TO DO:
-# - tests
-# - Should be able to back in dollars and cents
-# - Shouldn't be able to back for negative money
+# - Tests for get_project method
 # - More refactoring
+# - Refactor tests
 
 require 'rubygems'
 require 'bundler/setup'

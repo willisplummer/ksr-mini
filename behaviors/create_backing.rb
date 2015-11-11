@@ -1,8 +1,8 @@
 class CreateBacking
 	def self.perform(name, project, cc, amount)
-		if valid_length?(name) && valid_cc?(cc) && luhn?(cc) && unique_cc?(name, cc)
-			b = Backing.new({ name: name, project: project.name, cc: cc.to_i, amount: amount.to_i })
-			project.add(amount.to_i, name)
+		if valid_length?(name) && valid_cc?(cc) && luhn?(cc) && unique_cc?(name, cc) && pledge_valid?(amount) && valid_cents(amount)
+			b = Backing.new({ name: name, project: project.name, cc: cc.to_i, amount: amount.to_f })
+			project.add(amount.to_f, name)
 			BACKINGS << b
 			puts "#{b.name} backed project #{b.project} for $#{b.amount}"
 			puts "#{project.name} has now raised $#{project.raised} of $#{project.goal}"
@@ -12,6 +12,23 @@ class CreateBacking
 	def self.valid_length?(input)
 		unless 4 <= input.length && input.length <= 20
 			puts "ERROR: backer name must be between 4 and 20 characters"
+			return false
+		end
+		true
+	end
+
+	def self.pledge_valid?(amount)
+		unless amount.to_i > 0 && amount.sub(".", "") == amount.sub(".", "").to_i.to_s
+			puts "Error: pledge amount invalid must be greater than $0 and can only contain numbers"
+			return false
+		end
+		true
+	end
+
+	def self.valid_cents(amount)
+		parts = amount.split(".")
+		if !parts[1].nil? && parts[1].length > 2
+			puts "Error: pledge amount contains too many decimal places"
 			return false
 		end
 		true

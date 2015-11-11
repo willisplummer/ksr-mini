@@ -70,4 +70,50 @@ describe "Create Backing" do
 			expect(BACKINGS[1]).to be_nil 
 		end
 	end
+
+	context "when pledge is less than 0" do
+		before (:each) do
+			CreateBacking.perform("User", PROJECTS[0], "79927398713", "-10")
+		end
+		it "does not create a new backing" do
+			expect(BACKINGS[0]).to be_nil 
+		end
+	end
+
+	context "when pledge is 0" do
+		before (:each) do
+			CreateBacking.perform("User", PROJECTS[0], "79927398713", "0")
+		end
+		it "does not create a new backing" do
+			expect(BACKINGS[0]).to be_nil 
+		end
+	end
+
+	context "when pledge amount contains non-number characters" do
+		before (:each) do
+			CreateBacking.perform("User", PROJECTS[0], "79927398713", "100$")
+		end
+		it "does not create a new backing" do
+			expect(BACKINGS[0]).to be_nil 
+		end
+	end
+
+	context "when pledge amount contains cents" do
+		before (:each) do
+			CreateBacking.perform("User", PROJECTS[0], "79927398713", "100.25")
+			CreateBacking.perform("User2", PROJECTS[0], "49927398716", "35.50")
+		end
+		it "adds them to the project's raised funds" do
+			expect(PROJECTS[0].raised).to eq(135.75) 
+		end
+	end
+
+	context "when pledge amount contains three decimal places" do
+		before (:each) do
+			CreateBacking.perform("User", PROJECTS[0], "79927398713", "100.123")
+		end
+		it "does not create a new backing" do
+			expect(BACKINGS[0]).to be_nil 
+		end
+	end
 end

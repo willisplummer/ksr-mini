@@ -9,7 +9,7 @@ class Project
 	end
 
 	def add(pledge, name)
-		@raised += pledge.to_i
+		@raised += pledge.to_f
 		@backings << { user: name, amount: pledge }
 	end
 
@@ -18,7 +18,7 @@ class Project
 			puts "#{@name} is successful!"
 			true
 		else
-			puts "#{@name} needs $#{@goal.to_i - @raised.to_i} more dollars to be successful"
+			puts "#{@name} needs $#{@goal.to_i - @raised} more dollars to be successful"
 			false
 		end
 	end
