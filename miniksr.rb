@@ -31,11 +31,7 @@ class App
 				when "backer"
 					ListUserBackings.perform(input_split[1])
 				when "help"
-					puts "please use one of the following commands:\n\n"
-					puts "project <project> <target amount>"
-					puts "back <given name> <project> <credit card number> <backing amount>"
-					puts "list <project>"
-					puts "backer <given name>"
+					puts "please use one of the following commands:\n\nproject <project> <target amount>\nback <given name> <project> <credit card number> <backing amount>\nlist <project>\nbacker <given name>"
 				when "exit"
 					break
 				else

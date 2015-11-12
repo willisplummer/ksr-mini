@@ -5,12 +5,10 @@ class Project
 			send("#{k}=", v)
 		end
 		@raised = 0
-		@backings = []
 	end
 
 	def add(pledge, name)
 		@raised += pledge
-		@backings << { user: name, amount: pledge }
 	end
 
 	def successful?

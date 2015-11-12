@@ -21,11 +21,6 @@ describe "Backing" do
 				expect(subject.raised).to eq(0)
 			end
 		end
-		describe "#backings" do
-			it "returns the correct value" do
-				expect(subject.backings).to eq([])
-			end
-		end
 	end
 
 
@@ -37,11 +32,6 @@ describe "Backing" do
 		describe "#raised" do
 			it "returns the correct value" do
 				expect(subject.raised).to eq(150)
-			end
-		end
-		describe "#backings" do
-			it "returns the correct value" do
-				expect(subject.backings).to eq([ {user: "JOE", amount: 150} ])
 			end
 		end
 	end
@@ -72,6 +62,4 @@ describe "Backing" do
 			end
 		end
 	end
-
-	
 end

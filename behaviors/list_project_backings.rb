@@ -1,11 +1,12 @@
 class ListProjectBackings
 	def self.perform(project)
 		if App.project_exists?(project)
-			project = App.get_project(project)
-			project.backings.each do |v|
-				puts "-- #{v[:user]} backed for $#{App.format_cents(v[:amount])}"
+			BACKINGS.each do |v|
+				if v.project == project
+					puts "-- #{v.name} backed for $#{App.format_cents(v.amount)}"
+				end
 			end
-			project.successful?
+			App.get_project(project).successful?
 		end
 	end
 end
