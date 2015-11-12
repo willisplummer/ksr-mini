@@ -34,4 +34,18 @@ describe "Create Project Behavior" do
 			expect(PROJECTS[0]).to be_nil
 		end
 	end
+
+	context "When Project name is already taken" do
+		before (:each) do
+			CreateProject.perform("TEST", "300")
+			CreateProject.perform("TEST", "300")
+		end
+
+		it "does not save the duplicate Project in PROJECTS" do
+			expect(PROJECTS[1]).to be_nil
+		end
+		it "returns the correct error message" do
+			expect { CreateProject.perform("TEST", "300") }.to output("ERROR: project name already taken\n").to_stdout
+		end
+	end
 end

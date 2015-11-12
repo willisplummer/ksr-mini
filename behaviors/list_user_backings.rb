@@ -4,7 +4,7 @@ class ListUserBackings
 		BACKINGS.each do |v|
 			if v.name == name
 				contains = true
-				puts "-- Backed #{v.project} for $#{v.amount}"
+				puts "-- Backed #{v.project} for $#{App.format_cents(v.amount)}"
 			end
 		end
 		unless contains

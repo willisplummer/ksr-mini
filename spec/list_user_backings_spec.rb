@@ -12,7 +12,7 @@ describe "List User Backings" do
 
 	context "when the user has backed projects" do
 		it "lists the backings" do
-		  expect { ListUserBackings.perform("USER") }.to output("-- Backed TEST for $150.0\n-- Backed TEST2 for $200.0\n").to_stdout
+		  expect { ListUserBackings.perform("USER") }.to output("-- Backed TEST for $150.00\n-- Backed TEST2 for $200.00\n").to_stdout
 		end
 	end
 

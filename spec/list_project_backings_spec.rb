@@ -13,7 +13,7 @@ describe "List Project Backings" do
 			CreateBacking.perform("USER", "TEST", "79927398713", "150")
 		end
 		it "lists the backing" do
-		  expect { ListProjectBackings.perform("TEST") }.to output("-- USER backed for $150.0\nTEST needs $150.0 more dollars to be successful\n").to_stdout
+		  expect { ListProjectBackings.perform("TEST") }.to output("-- USER backed for $150.00\nTEST needs $150.00 more dollars to be successful\n").to_stdout
 		end
 	end
 
@@ -22,7 +22,13 @@ describe "List Project Backings" do
 			CreateBacking.perform("USER", "TEST2", "79927398713", "150")
 		end
 		it "does not list any backings" do
-		  expect { ListProjectBackings.perform("TEST") }.not_to output("-- USER backed for $150.0\nTEST needs $150.0 more dollars to be successful\n").to_stdout
+		  expect { ListProjectBackings.perform("TEST") }.to output("TEST needs $300.00 more dollars to be successful\n").to_stdout
+		end
+	end
+
+	context "when the project does not exist" do
+		it "returns the correct error message" do
+		  expect { ListProjectBackings.perform("TEST3") }.to output("ERROR: project does not exist\n").to_stdout
 		end
 	end
 end

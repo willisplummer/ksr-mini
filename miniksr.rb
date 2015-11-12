@@ -1,5 +1,4 @@
 # TO DO:
-# - Tests for get_project method
 # - More refactoring
 # - Refactor tests
 
@@ -62,5 +61,9 @@ class App
 			puts "ERROR: project does not exist"
 			false
 		end
+	end
+
+	def self.format_cents(input)
+		sprintf("%.2f", input)
 	end
 end

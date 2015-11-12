@@ -5,34 +5,38 @@ class CreateBacking
 			b = Backing.new({ name: name, project: project.name, cc: cc.to_i, amount: amount.to_f })
 			project.add(amount.to_f, name)
 			BACKINGS << b
-			puts "#{b.name} backed project #{b.project} for $#{b.amount}"
-			puts "#{project.name} has now raised $#{project.raised} of $#{project.goal}"
+			puts "#{b.name} backed project #{b.project} for $#{App.format_cents(b.amount)}"
+			puts "#{project.name} has now raised $#{App.format_cents(project.raised)} of $#{project.goal}"
 		end
 	end
 
 	def self.valid_length?(input)
 		unless 4 <= input.length && input.length <= 20
 			puts "ERROR: backer name must be between 4 and 20 characters"
-			return false
+			false
+		else
+			true
 		end
-		true
+		
 	end
 
 	def self.pledge_valid?(amount)
-		unless amount.to_i > 0 && amount.sub(".", "") == amount.sub(".", "").to_i.to_s
-			puts "Error: pledge amount invalid must be greater than $0 and can only contain numbers"
-			return false
+		unless amount.to_i >= 1 && amount.sub(".", "") == amount.sub(".", "").to_i.to_s
+			puts "Error: pledge amount invalid; must be at least $1 and can only contain numbers"
+			false
+		else
+			true
 		end
-		true
 	end
 
 	def self.valid_cents(amount)
 		parts = amount.split(".")
 		if !parts[1].nil? && parts[1].length > 2
 			puts "Error: pledge amount contains too many decimal places"
-			return false
+			false
+		else
+			true
 		end
-		true
 	end
 
 	def self.valid_cc?(input)
