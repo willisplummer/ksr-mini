@@ -8,7 +8,7 @@ class CreateProject
 	end
 
 	def self.name_not_taken?(input)
-		if App.get_project(project).nil?
+		if App.get_project(input).nil?
 			true
 		else
 			puts "ERROR: project name already taken"
