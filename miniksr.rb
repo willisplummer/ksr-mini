@@ -1,6 +1,7 @@
 # TO DO:
 # - More refactoring
 # - Refactor tests
+# - get tests to stop displaying warnings about reassigning constants
 
 require 'rubygems'
 require 'bundler/setup'
@@ -9,6 +10,12 @@ Dir[File.dirname(__FILE__) + '/behaviors/*.rb'].each {|file| require file }
 
 PROJECTS = []
 BACKINGS = []
+HELP = %{please use one of the following commands:
+
+project <project> <target amount>
+back <given name> <project> <credit card number> <backing amount>
+list <project>
+backer <given name>}
 
 class App
 	def initialize
@@ -31,7 +38,7 @@ class App
 				when "backer"
 					ListUserBackings.perform(input_split[1])
 				when "help"
-					puts "please use one of the following commands:\n\nproject <project> <target amount>\nback <given name> <project> <credit card number> <backing amount>\nlist <project>\nbacker <given name>"
+					puts HELP
 				when "exit"
 					break
 				else
@@ -42,20 +49,16 @@ class App
 	end
 
 	def self.get_project(project)
-		PROJECTS.each do |v|
-			if v.name == project
-				return v
-			end
-		end	
-		return nil
+		PROJECTS.each { |v| return v if v.name == project }
+		nil
 	end
 
 	def self.project_exists?(project)
-		unless get_project(project).nil?
-			true
-		else
+		if get_project(project).nil?
 			puts "ERROR: project does not exist"
 			false
+		else
+			true
 		end
 	end
 

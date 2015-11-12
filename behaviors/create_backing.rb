@@ -3,7 +3,7 @@ class CreateBacking
 		if valid_length?(name) && valid_cc?(cc) && luhn?(cc) && unique_cc?(name, cc) && pledge_valid?(amount) && valid_cents(amount) && App.project_exists?(project)
 			project = App.get_project(project)
 			b = Backing.new({ name: name, project: project.name, cc: cc.to_i, amount: amount.to_f })
-			project.add(amount.to_f, name)
+			project.add(amount.to_f)
 			BACKINGS << b
 			puts "#{b.name} backed project #{b.project} for $#{App.format_cents(b.amount)}"
 			puts "#{project.name} has now raised $#{App.format_cents(project.raised)} of $#{project.goal}"
@@ -11,21 +11,21 @@ class CreateBacking
 	end
 
 	def self.valid_length?(input)
-		unless 4 <= input.length && input.length <= 20
-			puts "ERROR: backer name must be between 4 and 20 characters"
-			false
-		else
+		if 4 <= input.length && input.length <= 20
 			true
+		else
+			puts "ERROR: backer name must be between 4 and 20 characters"
+			false		
 		end
 		
 	end
 
 	def self.pledge_valid?(amount)
-		unless amount.to_i >= 1 && amount.sub(".", "") == amount.sub(".", "").to_i.to_s
+		if amount.to_i >= 1 && amount.sub(".", "") == amount.sub(".", "").to_i.to_s
+			true
+		else
 			puts "Error: pledge amount invalid; must be at least $1 and can only contain numbers"
 			false
-		else
-			true
 		end
 	end
 
@@ -59,22 +59,18 @@ class CreateBacking
 
 	def self.luhn?(cc)
 		sum = 0
+		
 		cc = cc.to_s
+		cc = "0#{cc}" if cc.length % 2 == 0
 
-		if cc.length % 2 == 0
-			cc = "0" + cc
-		end
 		digits = cc.split("")
-
 		digits.each_with_index do |n, i|
 			if i % 2 == 0
 				sum += n.to_i
 			else
 				double = n.to_i * 2
 				double = double.to_s.split("")
-				double.each do |d|
-					sum += d.to_i
-				end
+				double.each { |d| sum += d.to_i }
 			end
 		end
 
@@ -84,6 +80,5 @@ class CreateBacking
 			puts "ERROR: card fails luhn-10 validation"
 			false
 		end
-
 	end	
 end

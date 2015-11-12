@@ -1,13 +1,11 @@
 class Project
 	attr_accessor :name, :goal, :raised, :backings
 	def initialize(attributes = {})
-		attributes.each do |k, v|
-			send("#{k}=", v)
-		end
+		attributes.each { |k, v| send("#{k}=", v) }
 		@raised = 0
 	end
 
-	def add(pledge, name)
+	def add(pledge)
 		@raised += pledge
 	end
 

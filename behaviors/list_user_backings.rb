@@ -7,8 +7,6 @@ class ListUserBackings
 				puts "-- Backed #{v.project} for $#{App.format_cents(v.amount)}"
 			end
 		end
-		unless contains
-			puts "ERROR: user does not exist"
-		end
+		puts "ERROR: user does not exist" unless contains
 	end
 end

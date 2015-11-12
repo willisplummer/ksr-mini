@@ -26,7 +26,7 @@ describe "Backing" do
 
 	describe "add method" do
 		before :each do
-			subject.add(150, "JOE")
+			subject.add(150)
 		end
 
 		describe "#raised" do
