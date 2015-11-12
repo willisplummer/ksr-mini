@@ -8,11 +8,11 @@ class CreateProject
 	end
 
 	def self.name_not_taken?(input)
-		if App.project_exists?(input)
+		if App.get_project(project).nil?
+			true
+		else
 			puts "ERROR: project name already taken"
 			false
-		else
-			true
 		end
 	end
 
