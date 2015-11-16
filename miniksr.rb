@@ -18,51 +18,51 @@ list <project>
 backer <given name>}
 
 class App
-	def initialize
-		puts "now running mini-ksr"
-	end
+  def initialize
+    puts "now running mini-ksr"
+  end
 
-	def run
-		while true
-			print "> "
-			input = gets.chomp
-			unless input == ""
-				input_split = input.split(" ")
-				case input_split[0].downcase
-				when "project"
-					CreateProject.perform(input_split[1], input_split[2])
-				when "back"
-					CreateBacking.perform(input_split[1], input_split[2], input_split[3], input_split[4])
-				when "list"
-					ListProjectBackings.perform(input_split[1])
-				when "backer"
-					ListUserBackings.perform(input_split[1])
-				when "help"
-					puts HELP
-				when "exit"
-					break
-				else
-					puts "ERROR: invalid request. type help for more info."
-				end
-			end
-		end
-	end
+  def run
+    while true
+      print "> "
+      input = gets.chomp
+      unless input == ""
+        input_split = input.split(" ")
+        case input_split[0].downcase
+        when "project"
+          CreateProject.perform(input_split[1], input_split[2])
+        when "back"
+          CreateBacking.perform(input_split[1], input_split[2], input_split[3], input_split[4])
+        when "list"
+          ListProjectBackings.perform(input_split[1])
+        when "backer"
+          ListUserBackings.perform(input_split[1])
+        when "help"
+          puts HELP
+        when "exit"
+          break
+        else
+          puts "ERROR: invalid request. type help for more info."
+        end
+      end
+    end
+  end
 
-	def self.get_project(project)
-		PROJECTS.each { |v| return v if v.name == project }
-		nil
-	end
+  def self.get_project(project)
+    PROJECTS.each { |v| return v if v.name == project }
+    nil
+  end
 
-	def self.project_exists?(project)
-		if get_project(project).nil?
-			puts "ERROR: project does not exist"
-			false
-		else
-			true
-		end
-	end
+  def self.project_exists?(project)
+    if get_project(project).nil?
+      puts "ERROR: project does not exist"
+      false
+    else
+      true
+    end
+  end
 
-	def self.format_cents(input)
-		sprintf("%.2f", input)
-	end
+  def self.format_cents(input)
+    sprintf("%.2f", input)
+  end
 end
