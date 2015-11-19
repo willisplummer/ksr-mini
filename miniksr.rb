@@ -8,18 +8,42 @@ require 'bundler/setup'
 Dir[File.dirname(__FILE__) + '/models/*.rb'].each {|file| require file }
 Dir[File.dirname(__FILE__) + '/behaviors/*.rb'].each {|file| require file }
 
-PROJECTS = []
-BACKINGS = []
-HELP = %{please use one of the following commands:
+class Database
+  PROJECTS = []
+  BACKINGS = []
 
-project <project> <target amount>
-back <given name> <project> <credit card number> <backing amount>
-list <project>
-backer <given name>}
+  def get_project(project)
+    PROJECTS.find { |v| v.name == project }
+  end
+
+  def search(type, name)
+    if type == "project"
+      t = PROJECTS
+    elsif type == "backing"
+      t = BACKINGS
+    else
+      returns "not a valid type"
+    end
+    t.find { |v| v.name == name }
+  end
+end
+
 
 class App
+  
+  HELP = <<-STR
+    please use one of the following commands:
+
+    project <project> <target amount>
+    back <given name> <project> <credit card number> <backing amount>
+    list <project>
+    backer <given name>
+  STR
+
+
   def initialize
     puts "now running mini-ksr"
+    @database = Database.new
   end
 
   def run
@@ -38,7 +62,7 @@ class App
         when "backer"
           ListUserBackings.perform(input_split[1])
         when "help"
-          puts HELP
+          puts App::HELP
         when "exit"
           break
         else
@@ -48,9 +72,8 @@ class App
     end
   end
 
-  def self.get_project(project)
-    PROJECTS.each { |v| return v if v.name == project }
-    nil
+  def database
+    @database
   end
 
   def self.project_exists?(project)
