@@ -50,7 +50,7 @@ class App
     end
   end
 
-  def format_cents(input)
+  def self.format_cents(input)
     sprintf("%.2f", input)
   end
 end

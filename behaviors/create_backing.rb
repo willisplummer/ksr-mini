@@ -11,8 +11,8 @@ class CreateBacking
       project = cb.db.search("project", cb.project)
       cb.add_backing
       project.add(cb.amount.to_f)
-      puts "#{cb.name} backed project #{cb.project} for $#{app.format_cents(cb.amount)}"
-      puts "#{project.name} has now raised $#{app.format_cents(project.raised)} of $#{project.goal}"
+      puts "#{cb.name} backed project #{cb.project} for $#{App.format_cents(cb.amount)}"
+      puts "#{project.name} has now raised $#{App.format_cents(project.raised)} of $#{project.goal}"
     end
   end
 
