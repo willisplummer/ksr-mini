@@ -8,29 +8,8 @@ require 'bundler/setup'
 Dir[File.dirname(__FILE__) + '/models/*.rb'].each {|file| require file }
 Dir[File.dirname(__FILE__) + '/behaviors/*.rb'].each {|file| require file }
 
-class Database
-  PROJECTS = []
-  BACKINGS = []
-
-  def get_project(project)
-    PROJECTS.find { |v| v.name == project }
-  end
-
-  def search(type, name)
-    if type == "project"
-      t = PROJECTS
-    elsif type == "backing"
-      t = BACKINGS
-    else
-      returns "not a valid type"
-    end
-    t.find { |v| v.name == name }
-  end
-end
-
-
 class App
-  
+  attr_reader :database
   HELP = <<-STR
     please use one of the following commands:
 
@@ -39,7 +18,6 @@ class App
     list <project>
     backer <given name>
   STR
-
 
   def initialize
     puts "now running mini-ksr"
@@ -54,13 +32,13 @@ class App
         input_split = input.split(" ")
         case input_split[0].downcase
         when "project"
-          CreateProject.perform(input_split[1], input_split[2])
+          CreateProject.perform(self, input_split[1], input_split[2])
         when "back"
-          CreateBacking.perform(input_split[1], input_split[2], input_split[3], input_split[4])
+          CreateBacking.perform(self, input_split[1], input_split[2], input_split[3], input_split[4])
         when "list"
-          ListProjectBackings.perform(input_split[1])
+          ListProjectBackings.perform(self, input_split[1])
         when "backer"
-          ListUserBackings.perform(input_split[1])
+          ListUserBackings.perform(self, input_split[1])
         when "help"
           puts App::HELP
         when "exit"
@@ -72,20 +50,7 @@ class App
     end
   end
 
-  def database
-    @database
-  end
-
-  def self.project_exists?(project)
-    if get_project(project).nil?
-      puts "ERROR: project does not exist"
-      false
-    else
-      true
-    end
-  end
-
-  def self.format_cents(input)
+  def format_cents(input)
     sprintf("%.2f", input)
   end
 end

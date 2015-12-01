@@ -1,8 +1,7 @@
 class ListProjectBackings
-  def self.perform(project)
-    if App.project_exists?(project)
-      BACKINGS.each { |v| puts "-- #{v.name} backed for $#{App.format_cents(v.amount)}" if v.project == project }
-      App.get_project(project).successful?
-    end
+  def self.perform(app, project)
+    backings = app.database.get_backings("project", project)
+    backings.each { |v| puts "-- #{v.name} backed for $#{app.format_cents(v.amount)}" }
+    backings == [] ? (puts "ERROR: project does not exist") : app.database.search("project", project).successful?
   end
 end

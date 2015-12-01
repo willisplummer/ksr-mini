@@ -1,13 +1,20 @@
 class CreateProject
-  def self.perform(name, goal)
-    if valid_length?(name) && name_not_taken?(name)
-      PROJECTS << Project.new( { name: name, goal: goal.to_i } )
+  attr_accessor :app, :name, :goal, :db
+  def initialize(attributes = {})
+    attributes.each { |k, v| send("#{k}=", v) }
+    @db = app.database
+  end
+
+  def self.perform(app, name, goal)
+    cp = CreateProject.new( { app: app, name: name, goal: goal } )
+    if cp.valid_length? && cp.name_not_taken?
+      cp.db.add("project", Project.new( { name: name, goal: goal.to_i } ))
       puts "Added #{name} project with target of $#{goal}"
     end
   end
 
-  def self.name_not_taken?(input)
-    if App.database.get_project(input).nil?
+  def name_not_taken?
+    if @db.search("project", @name).nil?
       true
     else
       puts "ERROR: project name already taken"
@@ -15,8 +22,8 @@ class CreateProject
     end
   end
 
-  def self.valid_length?(input)
-    if 4 <= input.length && input.length <= 20
+  def valid_length?
+    if 4 <= @name.length && @name.length <= 20
       true
     else
       puts "ERROR: project name must be between 4 and 20 characters"
