@@ -34,7 +34,7 @@ class App
         when "project"
           CreateProject.perform(self, input_split[1], input_split[2])
         when "back"
-          CreateBacking.perform(self, input_split[1], input_split[2], input_split[3], input_split[4])
+          CreateBacking.perform(app: self, name: input_split[1], project: input_split[2], cc: input_split[3], amount: input_split[4])
         when "list"
           ListProjectBackings.perform(self, input_split[1])
         when "backer"

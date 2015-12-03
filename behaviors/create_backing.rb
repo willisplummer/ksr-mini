@@ -5,23 +5,24 @@ class CreateBacking
     @db = app.database
   end
 
-  def self.perform(app, name, project, cc, amount)
-    cb = CreateBacking.new( { app: app, name: name, project: project, cc: cc, amount: amount } )
-    if cb.valid?
-      project = cb.db.search("project", cb.project)
-      cb.add_backing
-      project.add(cb.amount.to_f)
-      puts "#{cb.name} backed project #{cb.project} for $#{App.format_cents(cb.amount)}"
+#splat operator
+  def self.perform(*args)
+    new(*args).perform
+  end
+
+  def perform
+    if valid?
+      project = db.search("project", project)
+      add_backing
+      project.add(amount.to_f)
+      puts "#{name} backed project #{project} for $#{App.format_cents(amount)}"
       puts "#{project.name} has now raised $#{App.format_cents(project.raised)} of $#{project.goal}"
     end
   end
 
+#simplify this stuff v
   def valid?
-    if valid_length? && valid_cc? && luhn? && valid_pledge? && valid_cents? && project_exists? && unique_cc?
-      true
-    else
-      false
-    end
+    valid_length? && valid_cc? && luhn? && valid_pledge? && valid_cents? && project_exists? && unique_cc?
   end
 
   def add_backing
@@ -30,7 +31,7 @@ class CreateBacking
   end
 
   def project_exists?
-    unless @db.search("project", @project)
+    unless @db.search("project", @project).nil?
       puts "Error: project does not exist"
       false
     else
