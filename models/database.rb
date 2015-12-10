@@ -7,44 +7,36 @@ class Database
   #refactor booleans to be booleans, use an @errors instance variable - look at the active record errors documentation
   #create a where and a find method - take a hash and compare whatever you pass in the hash to the object that is stored in that table
 
+  TABLES = [:projects, :backings]
 
   def initialize
-    @projects = []
-    @backings = []
+    @data = {}
+    TABLES.each { |k| @data[k]= [] }
+    TABLES.each
   end
 
-  def search(type, name)
-    case type 
-    when "project"
-      t = @projects
-    when "backing"
-      t = @backings
-    end
-    t.find { |v| v.name == name }
+
+# ways to pass a block to find:
+
+  def find(table, &block)
+    return nil unless block_given?
+    @data[table].find(&block)
   end
 
-  def get_backings(type, name)
-    case type
-    when "user"
-      @backings.find_all { |v| v.name == name }
-    when "project"
-      @backings.find_all { |v| v.project == name }
-    end
+  def find(table)
+    return nil unless block_given?
+    @data[table].find { |record| yield(record) }
   end
 
-  def match_cc(cc, name)
-    @backings.find { |v| v.cc.to_s == cc.to_s && v.name != name }
+  def find(table, conditions)
+    @data[table].find { |row| conditions.all? { |k, v| row.send(k) == v } }
   end
 
-  def add(type, object)
-    case type 
-    when "project"
-      t = @projects
-    when "backing"
-      t = @backings
-    else
-      return "not a valid type"
-    end
-    t << object
+  def where(table, accessor, value)
+    @data[table].find_all { |v| v.send(accessor) == value }
+  end
+
+  def add(table, object)
+    @data[table] << object
   end
 end

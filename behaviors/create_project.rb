@@ -5,16 +5,20 @@ class CreateProject
     @db = app.database
   end
 
-  def self.perform(app, name, goal)
-    cp = CreateProject.new( { app: app, name: name, goal: goal } )
-    if cp.valid_length? && cp.name_not_taken?
-      cp.db.add("project", Project.new( { name: name, goal: goal.to_i } ))
-      puts "Added #{name} project with target of $#{goal}"
+  def self.perform(*args)
+    new(*args).perform
+  end
+
+  def perform
+    if valid_length? && name_not_taken?
+      @db.add(:projects, Project.new( { name: @name, goal: @goal.to_i } ))
+      puts "Added #{@name} project with target of $#{@goal}"
     end
   end
 
   def name_not_taken?
-    if @db.search("project", @name).nil?
+    y = @db.find(:projects) { |v| v.name == @name }
+    if y.nil?
       true
     else
       puts "ERROR: project name already taken"
