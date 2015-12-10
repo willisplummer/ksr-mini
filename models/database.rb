@@ -12,7 +12,6 @@ class Database
   def initialize
     @data = {}
     TABLES.each { |k| @data[k]= [] }
-    TABLES.each
   end
 
 
