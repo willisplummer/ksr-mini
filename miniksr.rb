@@ -1,7 +1,6 @@
 # TO DO:
 # - More refactoring
 # - Refactor tests
-# - get tests to stop displaying warnings about reassigning constants
 
 require 'rubygems'
 require 'bundler/setup'

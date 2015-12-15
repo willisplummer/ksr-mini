@@ -11,8 +11,8 @@ class CreateBacking
   end
 
   def perform
+    @project = @db.find(:projects) { |v| v.name = @project }
     if valid?
-      project = db.search("project", project)
       add_backing
       project.add(amount.to_f)
       puts "#{name} backed project #{project} for $#{App.format_cents(amount)}"
@@ -26,12 +26,12 @@ class CreateBacking
   end
 
   def add_backing
-    b = Backing.new( { name: @name, project: @project, cc: @cc.to_i, amount: @amount.to_f } )
-    @db.add("backing", b)
+    b = Backing.new( { name: @name, project: @project.name, cc: @cc.to_i, amount: @amount.to_f } )
+    @db.add(:backings, b)
   end
 
   def project_exists?
-    unless @db.search("project", @project).nil?
+    if @project.nil?
       puts "Error: project does not exist"
       false
     else

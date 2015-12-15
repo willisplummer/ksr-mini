@@ -1,42 +1,32 @@
 class Database
-  #data hash instead of two arrays
-  #instead of instance variable for projects and instance variable for backings - two keys whose values are arrays
-  #types become accessors
   #look into replacing puts with exceptions e.g. on line 42 // porcelain vs. plumbing - db is all plumbing
   #different styles of arguments - kw args, attributes =, splat, etc.
   #refactor booleans to be booleans, use an @errors instance variable - look at the active record errors documentation
   #create a where and a find method - take a hash and compare whatever you pass in the hash to the object that is stored in that table
-  #look into using reduce on line 15
 
   TABLES = [:projects, :backings]
 
   def initialize
-    @data = {}
-    TABLES.each { |k| @data[k]= [] }
+    @data = TABLES.inject({}) do |hash, k| 
+      hash[k] = [] 
+      hash
+    end
   end
 
-
-# ways to pass a block to find:
-
   def find(table, &block)
-    return nil unless block_given?
+    raise 'no block given' unless block_given? 
+    raise 'table does not exist' unless TABLES.include?(table)
     @data[table].find(&block)
   end
 
-  def find(table)
-    return nil unless block_given?
-    @data[table].find { |record| yield(record) }
-  end
-
-  def find(table, conditions)
-    @data[table].find { |row| conditions.all? { |k, v| row.send(k) == v } }
-  end
-
-  def where(table, accessor, value)
-    @data[table].find_all { |v| v.send(accessor) == value }
+  def find_all(table, &block)
+    raise 'no block given' unless block_given? 
+    raise 'table does not exist' unless TABLES.include?(table)
+    @data[table].find_all(&block)
   end
 
   def add(table, object)
+    raise 'table does not exist' unless TABLES.include?(table)
     @data[table] << object
   end
 end
