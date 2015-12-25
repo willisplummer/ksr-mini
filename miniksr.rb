@@ -35,9 +35,9 @@ class App
         when "back"
           CreateBacking.perform(app: self, name: input_split[1], project: input_split[2], cc: input_split[3], amount: input_split[4])
         when "list"
-          ListProjectBackings.perform(self, input_split[1])
+          ListProjectBackings.perform(app: self, project: input_split[1])
         when "backer"
-          ListUserBackings.perform(self, input_split[1])
+          ListUserBackings.perform(app: self, name: input_split[1])
         when "help"
           puts App::HELP
         when "exit"

@@ -11,12 +11,12 @@ class CreateBacking
   end
 
   def perform
-    @project = @db.find(:projects) { |v| v.name = @project }
+    @project = @db.find(:projects) { |v| v.name == @project }
     if valid?
       add_backing
-      project.add(amount.to_f)
-      puts "#{name} backed project #{project} for $#{App.format_cents(amount)}"
-      puts "#{project.name} has now raised $#{App.format_cents(project.raised)} of $#{project.goal}"
+      @project.add(@amount.to_f)
+      puts "#{@name} backed project #{@project.name} for $#{App.format_cents(@amount)}"
+      puts "#{@project.name} has now raised $#{App.format_cents(@project.raised)} of $#{@project.goal}"
     end
   end
 
@@ -77,7 +77,7 @@ class CreateBacking
   end
 
   def unique_cc?
-    match = @db.match_cc(@cc, @name)
+    match = @db.find(:backings) { |v| v.cc.to_s == @cc.to_s && v.name != @name }
     if match.nil?
       true
     else
