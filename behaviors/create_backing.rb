@@ -5,14 +5,13 @@ class CreateBacking
     @db = app.database
   end
 
-#splat operator
   def self.perform(*args)
     new(*args).perform
   end
 
   def perform
     @project = @db.find(:projects) { |v| v.name == @project }
-    if valid?
+    if validate
       add_backing
       @project.add(@amount.to_f)
       puts "#{@name} backed project #{@project.name} for $#{App.format_cents(@amount)}"
@@ -20,70 +19,51 @@ class CreateBacking
     end
   end
 
-#simplify this stuff v
-  def valid?
-    valid_length? && valid_cc? && luhn? && valid_pledge? && valid_cents? && project_exists? && unique_cc?
-  end
-
   def add_backing
     b = Backing.new( { name: @name, project: @project.name, cc: @cc.to_i, amount: @amount.to_f } )
     @db.add(:backings, b)
   end
 
+  def validate
+    errors = []
+
+    errors << "ERROR: backer name must be between 4 and 20 characters" unless valid_length?
+    errors << "ERROR: project does not exist" unless project_exists?
+    errors << "ERROR: this card is invalid" unless valid_cc?
+    errors << "ERROR: card has already been added by another user" unless unique_cc?
+    errors << "ERROR: card fails luhn-10 validation" unless luhn?
+    errors << "ERROR: pledge amount invalid; must be at least $1 and can only contain numbers" unless valid_pledge?
+    errors << "ERROR: pledge amount contains too many decimal places" unless valid_cents?
+
+    errors.each { |x| puts x }
+
+    errors == []
+  end
+
   def project_exists?
-    if @project.nil?
-      puts "Error: project does not exist"
-      false
-    else
-      true
-    end
+    !@project.nil?
   end
 
   def valid_length?
-    if 4 <= @name.length && @name.length <= 20
-      true
-    else
-      puts "ERROR: backer name must be between 4 and 20 characters"
-      false   
-    end
+    4 <= @name.length && @name.length <= 20
   end
 
   def valid_pledge?
-    if @amount.to_i >= 1 && @amount.sub(".", "") == @amount.sub(".", "").to_i.to_s
-      true
-    else
-      puts "Error: pledge amount invalid; must be at least $1 and can only contain numbers"
-      false
-    end
+    @amount.to_i >= 1 && @amount.sub(".", "") == @amount.sub(".", "").to_i.to_s
   end
 
   def valid_cents?
     parts = @amount.split(".")
-    if !parts[1].nil? && parts[1].length > 2
-      puts "Error: pledge amount contains too many decimal places"
-      false
-    else
-      true
-    end
+    parts[1].nil? || parts[1].length < 2
   end
 
   def valid_cc?
-    if @cc.length <= 19 && @cc == @cc.to_i.to_s
-      true
-    else
-      puts "ERROR: this card is invalid"
-      false
-    end
+    @cc.length <= 19 && @cc == @cc.to_i.to_s
   end
 
   def unique_cc?
     match = @db.find(:backings) { |v| v.cc.to_s == @cc.to_s && v.name != @name }
-    if match.nil?
-      true
-    else
-      puts "ERROR: card has already been added by another user"
-      false
-    end
+    match.nil?
   end
 
   def luhn?
@@ -103,11 +83,6 @@ class CreateBacking
       end
     end
 
-    if sum % 10 == 0
-      true
-    else 
-      puts "ERROR: card fails luhn-10 validation"
-      false
-    end
+    sum % 10 == 0
   end 
 end

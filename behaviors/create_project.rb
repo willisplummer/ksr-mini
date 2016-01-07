@@ -10,28 +10,28 @@ class CreateProject
   end
 
   def perform
-    if valid_length? && name_not_taken?
+    if validate
       @db.add(:projects, Project.new( { name: @name, goal: @goal.to_i } ))
       puts "Added #{@name} project with target of $#{@goal}"
     end
   end
 
+  def validate
+    validations = { valid_length?: "ERROR: project name must be between 4 and 20 characters", 
+                    name_not_taken?: "ERROR: project name already taken" }
+
+    errors = validations.inject([]) { |memo, (k,v)| send(k) ? memo : memo << v }
+    errors.each { |x| puts x }
+
+    errors == []
+  end
+
   def name_not_taken?
     y = @db.find(:projects) { |v| v.name == @name }
-    if y.nil?
-      true
-    else
-      puts "ERROR: project name already taken"
-      false
-    end
+    y.nil?
   end
 
   def valid_length?
-    if 4 <= @name.length && @name.length <= 20
-      true
-    else
-      puts "ERROR: project name must be between 4 and 20 characters"
-      false
-    end
+    4 <= @name.length && @name.length <= 20
   end
 end
