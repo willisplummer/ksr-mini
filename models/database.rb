@@ -5,6 +5,8 @@ class Database
 
   TABLES = [:projects, :backings]
 
+
+#couldnt figure out how to use tap for this?
   def initialize
     @data = TABLES.inject({}) do |hash, k| 
       hash[k] = [] 
