@@ -24,6 +24,9 @@ class CreateBacking
     @db.add(:backings, b)
   end
 
+# should make this like the create project version, but at that point, maybe there should just be a validation class
+# that takes either a :project or :backing key and then runs the appropriate validations.
+
   def validate
     errors = []
 

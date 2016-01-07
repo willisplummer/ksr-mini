@@ -27,8 +27,8 @@ class CreateProject
   end
 
   def name_not_taken?
-    y = @db.find(:projects) { |v| v.name == @name }
-    y.nil?
+    match = @db.find(:projects) { |v| v.name == @name }
+    match.nil?
   end
 
   def valid_length?
