@@ -1,37 +1,35 @@
-class CreateProject
-  attr_accessor :app, :name, :goal, :db
-  def initialize(attributes = {})
-    attributes.each { |k, v| send("#{k}=", v) }
-    @db = app.database
-  end
+module Behaviors
+  class CreateProject
+    VALIDATIONS = {
+      valid_length?: "ERROR: project name must be between 4 and 20 characters", 
+      name_not_taken?: "ERROR: project name already taken"
+    }
 
-  def self.perform(*args)
-    new(*args).perform
-  end
+    attr_accessor :app, :name, :goal, :db
 
-  def perform
-    if validate
-      @db.add(:projects, Project.new( { name: @name, goal: @goal.to_i } ))
-      puts "Added #{@name} project with target of $#{@goal}"
+
+    def perform
+      if validate
+        @db.add(:projects, Project.new( { name: @name, goal: @goal.to_i } ))
+        puts "Added #{@name} project with target of $#{@goal}"
+      end
     end
-  end
 
-  def validate
-    validations = { valid_length?: "ERROR: project name must be between 4 and 20 characters", 
-                    name_not_taken?: "ERROR: project name already taken" }
+#chaining arguments
+    def validate
+      VALIDATIONS
+        .inject([]) {|accum, (m,msg)| send(m) ? accum : accum << msg }
+        .each {|error| puts error }
+        .empty?
+    end
 
-    errors = validations.inject([]) { |memo, (k,v)| send(k) ? memo : memo << v }
-    errors.each { |x| puts x }
+    def name_not_taken?
+      match = @db.find(:projects) { |v| v.name == @name }
+      match.nil?
+    end
 
-    errors == []
-  end
-
-  def name_not_taken?
-    match = @db.find(:projects) { |v| v.name == @name }
-    match.nil?
-  end
-
-  def valid_length?
-    4 <= @name.length && @name.length <= 20
+    def valid_length?
+      4 <= @name.length && @name.length <= 20
+    end
   end
 end

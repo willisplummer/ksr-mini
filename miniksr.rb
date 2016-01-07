@@ -1,11 +1,14 @@
 # TO DO:
 # - More refactoring
 # - Refactor tests
+# create an instance of REPL to handle these behaviors in run method
 
 require 'rubygems'
 require 'bundler/setup'
-Dir[File.dirname(__FILE__) + '/models/*.rb'].each {|file| require file }
-Dir[File.dirname(__FILE__) + '/behaviors/*.rb'].each {|file| require file }
+
+["models", "behaviors"].each do |dir|
+  Dir.glob(File.expand_path("../#{dir}/*.rb")).each {|file| require file }
+end
 
 class App
   attr_reader :database
@@ -26,25 +29,23 @@ class App
   def run
     while true
       print "> "
-      input = gets.chomp
-      unless input == ""
-        input_split = input.split(" ")
-        case input_split[0].downcase
-        when "project"
-          CreateProject.perform(app: self, name: input_split[1], goal: input_split[2])
-        when "back"
-          CreateBacking.perform(app: self, name: input_split[1], project: input_split[2], cc: input_split[3], amount: input_split[4])
-        when "list"
-          ListProjectBackings.perform(app: self, project: input_split[1])
-        when "backer"
-          ListUserBackings.perform(app: self, name: input_split[1])
-        when "help"
-          puts App::HELP
-        when "exit"
-          break
-        else
-          puts "ERROR: invalid request. type help for more info."
-        end
+      input = gets.chomp.split(" ")
+      next if input.empty?
+      case input[0].downcase
+      when "project"
+        Behaviors::CreateProject.perform(app: self, name: input[1], goal: input[2])
+      when "back"
+        Behaviors::CreateBacking.perform(app: self, name: input[1], project: input[2], cc: input[3], amount: input[4])
+      when "list"
+        Behaviors::ListProjectBackings.perform(app: self, project: input[1])
+      when "backer"
+        Behaviors::ListUserBackings.perform(app: self, name: input[1])
+      when "help"
+        puts App::HELP
+      when "exit"
+        break
+      else
+        puts "ERROR: invalid request. type help for more info."
       end
     end
   end
