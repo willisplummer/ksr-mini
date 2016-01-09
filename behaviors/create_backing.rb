@@ -1,4 +1,3 @@
-
 module Behaviors
   class CreateBacking < Base
     attr_accessor :name, :project, :cc, :amount
@@ -14,12 +13,10 @@ module Behaviors
     end
 
     def add_backing
-      b = Backing.new( { name: @name, project: @project.name, cc: @cc.to_i, amount: @amount.to_f } )
+      b = Models::Backing.new( { name: @name, project: @project.name, cc: @cc.to_i, amount: @amount.to_f } )
       @db.add(:backings, b)
     end
 
-  # should make this like the create project version, but at that point, maybe there should just be a validation class
-  # that takes either a :project or :backing key and then runs the appropriate validations.
   # module vs. classical inheritance - modules are instances of multi inheritance - share behaviors btwn classes + can inherit multiple modules
   # classical inheritance - you only inherit from one parent
 

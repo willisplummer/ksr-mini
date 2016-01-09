@@ -1,13 +1,12 @@
 # TO DO:
-# - More refactoring
-# - Refactor tests
 # create an instance of REPL to handle these behaviors in run method
+# fix the tests
 
 require 'rubygems'
 require 'bundler/setup'
 
-["models", "behaviors"].each do |dir|
-  Dir.glob(File.expand_path("../#{dir}/*.rb")).each {|file| require file }
+["lib", "models", "behaviors"].each do |dir|
+  Dir.glob(File.expand_path("./#{dir}/*.rb")).each {|file| require file }
 end
 
 class App

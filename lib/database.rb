@@ -1,17 +1,4 @@
 class Database
-  #look into replacing puts with exceptions where applicable
-  #different styles of arguments - kw args, attributes =, splat, etc.
-  #refactor booleans to be booleans, use an @errors instance variable - look at the active record errors documentation
-
-
-# 1/7
-#moving db -> lib
-#error handling, more semantically meaningful to a computer - see example below
-#base class for models + behaviors
-#move validations to the base model
-#constant in each model listing which validations it needs to have
-#datamapper vs activerecord patterns - borrow ron's book patterns of enterprise application architecture
-
   TABLES = [:projects, :backings]
 
   class TableDoesNotExistError < ArgumentError; end
@@ -37,6 +24,17 @@ class Database
     @data[table] << object
   end
 end
+# things to learn more about:
+# different styles of arguments - kw args, attributes =, splat, etc.
+
+# 1/7
+
+# moving db -> lib
+# error handling, more semantically meaningful to a computer - see example below
+# base class for models + behaviors
+# move validations to the base model
+# constant in each model listing which validations it needs to have
+# datamapper vs activerecord patterns - borrow ron's book patterns of enterprise application architecture
 
 
 #EXAMPLE OF RAISING ERRORS AND RESCUING
