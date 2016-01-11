@@ -8,16 +8,14 @@ module Models
 
     attr_accessor :goal, :raised, :backings
 
-    def raised
-      @raised = 0
-    end
-
-    def add(pledge)
-      @raised += pledge
+    def raised(db)
+      raised = db
+        .find_all(:backings) { |v| v.project == name }
+        .inject(0) { |sum, backing| sum + backing.amount.to_f }
     end
 
     def successful?
-      if @raised >= @goal.to_i
+      if raised >= goal.to_i
         puts "#{@name} is successful!"
         true
       else
@@ -25,6 +23,8 @@ module Models
         false
       end
     end
+
+# validations
 
     def name_not_taken?
       match = db.find(:projects) { |v| v.name == name }
