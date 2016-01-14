@@ -4,4 +4,3 @@ require "irb"
 require_relative "../miniksr.rb"
 
 app = App.new
-app.run
