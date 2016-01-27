@@ -8,13 +8,13 @@ class Database
   end
 
   def find(table, &block)
-    raise(ArgumentError, "no block given") unless block_given? 
+    raise(ArgumentError, "no block given") unless block_given?
     raise(KeyError, "the specified table '#{table}' does not exist" unless TABLES.include?(table)
     @data[table].find(&block)
   end
 
   def find_all(table, &block)
-    raise(ArgumentError, "no block given") unless block_given? 
+    raise(ArgumentError, "no block given") unless block_given?
     raise(KeyError, "the specified table '#{table}' does not exist" unless TABLES.include?(table)
     @data[table].find_all(&block)
   end
@@ -25,11 +25,25 @@ class Database
   end
 end
 
-# things to learn more about:
-# different styles of arguments - kw args, attributes =, splat, etc.
-
-# 1/7
-# TO DO:
+# 1/20
+# fix all of the tests
+# move the database into a file - load the contents of the file in the db methods, stop passing the app (use json or csv)
+# move the formatting cents thing to util class
+# create a custom error for calling a nonexistent table on the database instead of KeyError (key error is for fetch method - brackets returns nil)
+# marshaling vs serializing
+# look at an interaction w/ a feature and follow where it goes (chargeback path in rosie)
+# refactor the luhn method
+# ~~~ javascript stuff ~~~ js for cats?,
 # fix the tests
-# error handling, more semantically meaningful to a computer - see example below
-# datamapper vs activerecord patterns - borrow ron's book patterns of enterprise application architecture
+
+
+#SKILLS TO DEVELOP:
+# - js + jquery (js for cats: http://jsforcats.com/, codeacademy etc)
+# - rails
+#   - presenter pattern - in the book,
+#   - concerns - need to lookup,
+#   - rails engine - what is it etc.
+# - look at the engineering requirements https://github.com/kickstarter/wiki/pull/135/files
+
+#MTA App - do they make you pay for cron jobs on heroku? sinatra + heroku seems good
+# - httparty or excon for http requests

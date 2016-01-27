@@ -2,6 +2,7 @@ require 'rubygems'
 require 'bundler/setup'
 
 # currently named the base model "a_base" so that it gets loaded first but i'm wondering what the best solution is
+# have base files call the relevant files for them and then only call the base files here.
 ["lib", "models", "behaviors"].each do |dir|
   Dir.glob(File.expand_path("./#{dir}/*.rb")).each {|file| require file }
 end
