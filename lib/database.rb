@@ -1,10 +1,15 @@
+require 'json'
 class Database
   TABLES = [:projects, :backings]
 
   class TableDoesNotExistError < ArgumentError; end
 
   def initialize
-    @data = Hash[TABLES.map { |x| [x, []] }]
+    db_structure = Hash[TABLES.map { |x| [x, []] }]
+    data_file = File.open("db.json","r+") do |f|
+      f.write(db_structure.to_json)
+    end
+    @data = JSON.parse(data_file)
   end
 
   def find(table, &block)
