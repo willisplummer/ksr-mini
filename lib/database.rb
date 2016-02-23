@@ -1,38 +1,58 @@
 require 'json'
 class Database
   TABLES = [:projects, :backings]
+  FILE_PATH = 'db.json'
 
   class TableDoesNotExistError < ArgumentError; end
 
-  def initialize
-    db_structure = Hash[TABLES.map { |x| [x, []] }]
-    data_file = File.open("db.json","r+") do |f|
-      f.write(db_structure.to_json)
+  def self.load
+    if File.exist?(FILE_PATH)
+      data = JSON.parse(File.read(FILE_PATH))
+    else
+      data = Hash[TABLES.map { |x| [x, []] }]
     end
-    @data = JSON.parse(data_file)
+    new(data)
+  end
+
+  def initialize(data)
+    @data = data.reduce({}){ |memo, (k,v)| memo[k.to_sym] = v; memo }
   end
 
   def find(table, &block)
     raise(ArgumentError, "no block given") unless block_given?
-    raise(KeyError, "the specified table '#{table}' does not exist" unless TABLES.include?(table)
+    table_exists?(table)
     @data[table].find(&block)
   end
 
   def find_all(table, &block)
     raise(ArgumentError, "no block given") unless block_given?
-    raise(KeyError, "the specified table '#{table}' does not exist" unless TABLES.include?(table)
+    table_exists?(table)
     @data[table].find_all(&block)
   end
 
   def add(table, object)
-    raise(KeyError, "the specified table '#{table}' does not exist" unless TABLES.include?(table)
+    table_exists?(table)
     @data[table] << object
+    save
   end
+
+  def table_exists?(table)
+    raise(KeyError, "the specified table '#{table}' does not exist" unless TABLES.include?(table)
+  end
+
+  protected
+
+  def save
+    File.write(FILE_PATH, JSON.dump(@data))
+  end
+
 end
 
 # 1/20
 # fix all of the tests
-# move the database into a file - load the contents of the file in the db methods, stop passing the app (use json or csv)
+# extract method checking that tables exist
+# db.table(:projects).find {||}
+# stop passing the app - just pass the db
 # move the formatting cents thing to util class
 # create a custom error for calling a nonexistent table on the database instead of KeyError (key error is for fetch method - brackets returns nil)
 # marshaling vs serializing

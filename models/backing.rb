@@ -3,7 +3,7 @@ module Models
 
     TABLE = :backings
     VALIDATIONS = {
-      valid_length?: "ERROR: backer name must be between 4 and 20 characters", 
+      valid_length?: "ERROR: backer name must be between 4 and 20 characters",
       project_exists?: "ERROR: project does not exist",
       valid_cc?: "ERROR: this card is invalid",
       unique_cc?: "ERROR: card has already been added by another user",
@@ -45,7 +45,7 @@ module Models
 
     def luhn?
       sum = 0
-      
+
       cc = cc.to_s
       cc = "0#{cc}" if cc.length % 2 == 0
 
