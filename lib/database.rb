@@ -1,13 +1,14 @@
 require 'json'
 class Database
   TABLES = [:projects, :backings]
-  FILE_PATH = 'db.json'
+  FILE_PATH = 'lib/db.json'
 
   class TableDoesNotExistError < ArgumentError; end
 
   def self.load
     if File.exist?(FILE_PATH)
       data = JSON.parse(File.read(FILE_PATH))
+      .reduce({}){ |memo, (k,v)| memo[k.to_sym] = v; memo }
     else
       data = Hash[TABLES.map { |x| [x, []] }]
     end
@@ -15,7 +16,7 @@ class Database
   end
 
   def initialize(data)
-    @data = data.reduce({}){ |memo, (k,v)| memo[k.to_sym] = v; memo }
+    @data = data
   end
 
   def find(table, &block)
@@ -37,7 +38,7 @@ class Database
   end
 
   def table_exists?(table)
-    raise(KeyError, "the specified table '#{table}' does not exist" unless TABLES.include?(table)
+    raise(KeyError, "the specified table '#{table}' does not exist") unless TABLES.include?(table)
   end
 
   protected

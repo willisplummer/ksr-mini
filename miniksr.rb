@@ -20,7 +20,7 @@ class App
 
   def initialize
     puts "now running mini-ksr"
-    @database = Database.new
+    @database = Database.load
     self.run
   end
 
