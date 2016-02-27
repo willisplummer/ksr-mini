@@ -1,1 +1,1 @@
-{"projects":["#<Models::Project:0x007f9443444d80>"],"backings":[]}
+{"projects":[{"name":"test","goal":100,"db":"#<Database:0x007fe4aa3fefa8>"}],"backings":[]}

@@ -1,7 +1,7 @@
 module Behaviors
   class Base
-    attr_accessor :app, :db
-    
+    attr_accessor :db
+
     def initialize(attributes = {})
       attributes.each { |k, v| send("#{k}=", v) }
     end
@@ -12,10 +12,6 @@ module Behaviors
 
     def perform
       raise NotImplementedError, "must be defined in inherited class"
-    end
-
-    def db
-      app.database
     end
   end
 end

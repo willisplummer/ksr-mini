@@ -8,7 +8,9 @@ class Database
   def self.load
     if File.exist?(FILE_PATH)
       data = JSON.parse(File.read(FILE_PATH))
-      .reduce({}){ |memo, (k,v)| memo[k.to_sym] = v; memo }
+        .reduce({}){ |memo, (k,v)| memo[k.to_sym] = v; memo }
+      data[:projects] = data[:projects].reduce([]){ |accum, v| accum << Models::Project.new(v) }
+      data[:backings] = data[:backings].reduce([]){ |accum, v| accum << Models::Backing.new(v) }
     else
       data = Hash[TABLES.map { |x| [x, []] }]
     end
@@ -19,26 +21,14 @@ class Database
     @data = data
   end
 
-  def find(table, &block)
-    raise(ArgumentError, "no block given") unless block_given?
-    table_exists?(table)
-    @data[table].find(&block)
-  end
-
-  def find_all(table, &block)
-    raise(ArgumentError, "no block given") unless block_given?
-    table_exists?(table)
-    @data[table].find_all(&block)
+  def table(table)
+    raise(KeyError, "the specified table '#{table}' does not exist") unless TABLES.include?(table)
+    @data[table]
   end
 
   def add(table, object)
-    table_exists?(table)
-    @data[table] << object
+    table(table) << object
     save
-  end
-
-  def table_exists?(table)
-    raise(KeyError, "the specified table '#{table}' does not exist") unless TABLES.include?(table)
   end
 
   protected
@@ -50,15 +40,14 @@ class Database
 end
 
 # 1/20
-# fix all of the tests
-# extract method checking that tables exist
-# db.table(:projects).find {||}
-# stop passing the app - just pass the db
-# move the formatting cents thing to util class
+# extract method checking that tables exist [DONE]
+# db.table(:projects).find {||} [DONE]
+# stop passing the app - just pass the db [DONE]
+# move the formatting cents thing to util class [DONE]
 # create a custom error for calling a nonexistent table on the database instead of KeyError (key error is for fetch method - brackets returns nil)
 # marshaling vs serializing
-# look at an interaction w/ a feature and follow where it goes (chargeback path in rosie)
 # refactor the luhn method
+# get json db to work
 # ~~~ javascript stuff ~~~ js for cats?,
 # fix the tests
 

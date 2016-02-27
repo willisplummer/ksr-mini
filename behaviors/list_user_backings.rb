@@ -3,11 +3,11 @@ module Behaviors
     attr_accessor :name
 
     def perform
-      backings = @db.find_all(:backings) { |v| v.name = @name }
+      backings = db.table(:backings).find_all { |v| v.name = name }
       if backings == []
         puts "ERROR: user does not exist"
       else
-        backings.each { |v| puts "-- Backed #{v.project} for $#{App.format_cents(v.amount)}" }
+        backings.each { |v| puts "-- Backed #{v.project} for $#{Util.format_cents(v.amount)}" }
       end
     end
   end

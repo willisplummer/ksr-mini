@@ -24,10 +24,6 @@ class App
     self.run
   end
 
-  def self.format_cents(input)
-    sprintf("%.2f", input)
-  end
-
   def run
     loop do
       read
@@ -42,13 +38,13 @@ class App
   def handle_input(input)
     case input[0]
     when "project"
-      Behaviors::CreateProject.perform(app: self, name: input[1], goal: input[2])
+      Behaviors::CreateProject.perform(db: database, name: input[1], goal: input[2])
     when "back"
-      Behaviors::CreateBacking.perform(app: self, name: input[1], project: input[2], cc: input[3], amount: input[4])
+      Behaviors::CreateBacking.perform(db: database, name: input[1], project: input[2], cc: input[3], amount: input[4])
     when "list"
-      Behaviors::ListProjectBackings.perform(app: self, project: input[1])
+      Behaviors::ListProjectBackings.perform(db: database, project: input[1])
     when "backer"
-      Behaviors::ListUserBackings.perform(app: self, name: input[1])
+      Behaviors::ListUserBackings.perform(db: database, name: input[1])
     when "help"
       puts App::HELP
     when "exit"

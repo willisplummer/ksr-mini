@@ -3,7 +3,7 @@ module Behaviors
     attr_accessor :project
 
     def perform
-      project = db.find(:projects) { |v| v.name == project }
+      project = db.table(:projects).find { |v| v.name == project } # for some reason this isn't workign
       print_backings if project_exists?
     end
 
@@ -17,11 +17,11 @@ module Behaviors
     end
 
     def print_backings
-      backings = db.find_all(:backings) { |v| v.project == project.name }
+      backings = db.table(:backings).find_all { |v| v.project == project.name }
       if backings == []
         puts "#{@project.name} does not have any backings yet"
       else
-        backings.each { |v| puts "-- #{v.name} backed for $#{App.format_cents(v.amount)}" }
+        backings.each { |v| puts "-- #{v.name} backed for $#{Util.format_cents(v.amount)}" }
         project.successful?
       end
     end
