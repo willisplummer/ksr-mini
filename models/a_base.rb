@@ -9,12 +9,12 @@ module Models
     def save
       begin
         if validate
-          db.add(self.class::TABLE, self)
+          Database.instance.add(self.class::TABLE, self)
           true
         else
           false
         end
-      rescue KeyError => error
+      rescue TableDoesNotExistError => error
         Logger.log("Error saving to database: #{error}")
         puts "Could not save to database: #{error}"
         false

@@ -1,11 +1,26 @@
 require 'json'
+require 'singleton'
 class Database
+  include Singleton
+
   TABLES = [:projects, :backings]
   FILE_PATH = 'lib/db.json'
 
   class TableDoesNotExistError < ArgumentError; end
 
-  def self.load
+  # def self.load
+  #   if File.exist?(FILE_PATH)
+  #     data = JSON.parse(File.read(FILE_PATH))
+  #       .reduce({}){ |memo, (k,v)| memo[k.to_sym] = v; memo }
+  #     data[:projects] = data[:projects].reduce([]){ |accum, v| accum << Models::Project.new(v) }
+  #     data[:backings] = data[:backings].reduce([]){ |accum, v| accum << Models::Backing.new(v) }
+  #   else
+  #     data = Hash[TABLES.map { |x| [x, []] }]
+  #   end
+  #   new(data)
+  # end
+
+  def initialize
     if File.exist?(FILE_PATH)
       data = JSON.parse(File.read(FILE_PATH))
         .reduce({}){ |memo, (k,v)| memo[k.to_sym] = v; memo }
@@ -14,15 +29,11 @@ class Database
     else
       data = Hash[TABLES.map { |x| [x, []] }]
     end
-    new(data)
-  end
-
-  def initialize(data)
     @data = data
   end
 
   def table(table)
-    raise(KeyError, "the specified table '#{table}' does not exist") unless TABLES.include?(table)
+    raise(TableDoesNotExistError, "the specified table '#{table}' does not exist") unless TABLES.include?(table)
     @data[table]
   end
 
@@ -45,7 +56,6 @@ end
 # stop passing the app - just pass the db [DONE]
 # move the formatting cents thing to util class [DONE]
 # create a custom error for calling a nonexistent table on the database instead of KeyError (key error is for fetch method - brackets returns nil)
-# marshaling vs serializing
 # refactor the luhn method
 # get json db to work
 # ~~~ javascript stuff ~~~ js for cats?,

@@ -8,19 +8,19 @@ module Models
 
     attr_accessor :goal, :raised, :backings
 
-    def raised(db)
-      raised = db
+    def raised
+      raised = Database.instance
         .table(:backings)
         .find_all { |v| v.project == name }
         .inject(0) { |sum, backing| sum + backing.amount.to_f }
     end
 
-    def successful?(db)
-      if raised(db) >= goal.to_i
+    def successful?
+      if raised >= goal.to_i
         puts "#{name} is successful!"
         true
       else
-        puts "#{name} needs $#{Util.format_cents(goal.to_i - raised(db))} more dollars to be successful"
+        puts "#{name} needs $#{Util.format_cents(goal.to_i - raised)} more dollars to be successful"
         false
       end
     end
@@ -28,7 +28,7 @@ module Models
 # validations
 
     def name_not_taken?
-      match = db.table(:projects).find { |v| v.name == name }
+      match = Database.instance.table(:projects).find { |v| v.name == name }
       match.nil?
     end
 
