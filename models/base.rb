@@ -33,14 +33,10 @@ module Models
         .inject({}){ |accum, v| accum[v.to_s.delete("@")] = self.instance_variable_get(v); accum }
         .to_json
     end
-
-    #define valid_attributes for models in an array in a class level method
-    #instead of looping through attributes in initialize use the class level method
-    #db not instance variable - make it a singleton.
-
-    # def from_json!(string)
-    #   JSON.parse(string)
-    #     .each { |var, val| self.instance_variable_set(var,val) }
-    # end
   end
 end
+
+
+#define valid_attributes for models in an array in a class level method
+#instead of looping through attributes in initialize use the class level method
+#validate input count in miniksr
