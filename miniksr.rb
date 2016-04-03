@@ -1,7 +1,6 @@
 require 'rubygems'
 require 'bundler/setup'
 
-# currently named the base model "a_base" so that it gets loaded first but i'm wondering what the best solution is
 # have base files call the relevant files for them and then only call the base files here.
 require './behaviors/base.rb'
 require './models/base.rb'
@@ -37,6 +36,7 @@ class App
     handle_input(gets.chomp.downcase.split(" "))
   end
 
+# currently there's an error when user types 'project' without all the attributes
   def handle_input(input)
     case input[0]
     when "project"

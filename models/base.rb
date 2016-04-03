@@ -14,7 +14,7 @@ module Models
         else
           false
         end
-      rescue TableDoesNotExistError => error
+      rescue Database::TableDoesNotExistError => error
         Logger.log("Error saving to database: #{error}")
         puts "Could not save to database: #{error}"
         false
