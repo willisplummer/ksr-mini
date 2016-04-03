@@ -41,12 +41,3 @@ end
 
 # fix the tests
 # refactor the luhn method
-
-
-#SKILLS TO DEVELOP:
-# - js + jquery (js for cats: http://jsforcats.com/, codeacademy etc)
-# - rails
-#   - presenter pattern - in the book,
-#   - concerns - need to lookup,
-#   - rails engine - what is it etc.
-# - look at the engineering requirements https://github.com/kickstarter/wiki/pull/135/files
