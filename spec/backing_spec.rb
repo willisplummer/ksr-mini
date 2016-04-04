@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "Backing" do
   subject do
-    Backing.new({ name: "WILLIS", project: "TEST", cc: "1234567890", amount: "100"})
+    Models::Backing.new({ name: "WILLIS", project: "TEST", cc: "1234567890", amount: "100"})
   end
 
   describe "instance methods" do

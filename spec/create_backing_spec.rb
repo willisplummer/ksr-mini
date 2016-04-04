@@ -4,7 +4,7 @@ describe "Create Backing" do
   before (:each) do
     PROJECTS = []
     BACKINGS = []
-    CreateProject.perform("TEST", 300)
+    Behaviors::CreateProject.perform("TEST", 300)
   end
 
   context "when all is correct" do

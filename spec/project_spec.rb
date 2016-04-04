@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "Backing" do
   subject do
-    Project.new({ name: "TEST_PROJECT", goal: "500" })
+    Models::Project.new({ name: "TEST_PROJECT", goal: 500 })
   end
 
   describe "instance methods" do
@@ -13,7 +13,7 @@ describe "Backing" do
     end
     describe "#goal" do
       it "returns the correct value" do
-        expect(subject.goal).to eq("500")
+        expect(subject.goal).to eq(500)
       end
     end
     describe "#raised" do
@@ -23,23 +23,9 @@ describe "Backing" do
     end
   end
 
-
-  describe "add method" do
-    before :each do
-      subject.add(150)
-    end
-
-    describe "#raised" do
-      it "returns the correct value" do
-        expect(subject.raised).to eq(150)
-      end
-    end
-  end
-
-
   describe "successful project check" do
     before :each do
-      subject.raised = 500
+      allow(subject).to receive(:raised) {500}
     end
 
     describe "when raised funding goal" do
@@ -52,12 +38,11 @@ describe "Backing" do
 
   describe "successful check" do
     before :each do
-      subject.raised = 300
+      allow(subject).to receive(:raised) {400}
     end
 
     describe "when project has not raised funding goal" do
       it "returns false" do
-        expect(subject.raised).to eq(300)
         expect(subject.successful?).to eq(false)
       end
     end

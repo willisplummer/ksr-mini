@@ -6,7 +6,7 @@ module Models
       name_not_taken?: "ERROR: project name already taken"
     }
 
-    attr_accessor :goal, :raised, :backings
+    attr_accessor :goal, :raised
 
     def raised
       raised = Database.instance

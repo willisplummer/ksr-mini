@@ -1,6 +1,6 @@
 module Models
   class Base
-    attr_accessor :name, :db
+    attr_accessor :name
 
     def initialize(attributes = {})
       attributes.each { |k, v| send("#{k}=", v) }
@@ -36,7 +36,5 @@ module Models
   end
 end
 
-
 #define valid_attributes for models in an array in a class level method
 #instead of looping through attributes in initialize use the class level method
-#validate input count in miniksr

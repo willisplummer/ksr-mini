@@ -1,7 +1,5 @@
 module Behaviors
   class Base
-    attr_accessor :db
-
     def initialize(attributes = {})
       attributes.each { |k, v| send("#{k}=", v) }
     end
