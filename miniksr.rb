@@ -22,6 +22,7 @@ class App
 
   def initialize
     puts "now running mini-ksr"
+    Database.filepath = 'lib/db.json'
     self.run
   end
 

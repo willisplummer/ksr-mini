@@ -2,50 +2,51 @@ require 'spec_helper'
 
 describe "Create Project Behavior" do
   before (:each) do
-    PROJECTS = []
+    Database.filepath = 'lib/testdb.json'
+    Database.instance.reset!
   end
 
   context "When Project name is valid length" do
     before (:each) do
-      CreateProject.perform("TEST", "300")
+      Behaviors::CreateProject.perform({ name: "TEST", goal: "300"})
     end
 
-    it "saves the Project in PROJECTS" do
-      expect(PROJECTS[0]).not_to be_nil
+    it "saves the Project in the database" do
+      expect(Database.instance.table(:projects)[0]).not_to be_nil
     end
   end
 
   context "When Project name is too short" do
     before (:each) do
-      CreateProject.perform("TE", "300")
+      Behaviors::CreateProject.perform({ name: "TE", goal: "300"})
     end
 
     it "does not save the Project in PROJECTS" do
-      expect(PROJECTS[0]).to be_nil
+      expect(Database.instance.table(:projects)[0]).to be_nil
     end
   end
 
   context "When Project name is too long" do
     before (:each) do
-      CreateProject.perform("TESTOFTHISWAYTOOLONGNAME", "300")
+      Behaviors::CreateProject.perform({ name: "TESTOFTHISNAMEISWAYTOOLONG", goal: "300"})
     end
 
     it "does not save the Project in PROJECTS" do
-      expect(PROJECTS[0]).to be_nil
+      expect(Database.instance.table(:projects)[0]).to be_nil
     end
   end
 
   context "When Project name is already taken" do
     before (:each) do
-      CreateProject.perform("TEST", "300")
-      CreateProject.perform("TEST", "300")
+      Behaviors::CreateProject.perform({ name: "TEST", goal: "300"})
+      Behaviors::CreateProject.perform({ name: "TEST", goal: "300"})
     end
 
     it "does not save the duplicate Project in PROJECTS" do
-      expect(PROJECTS[1]).to be_nil
+      expect(Database.instance.table(:projects)[1]).to be_nil
     end
     it "returns the correct error message" do
-      expect { CreateProject.perform("TEST", "300") }.to output("ERROR: project name already taken\n").to_stdout
+      expect { Behaviors::CreateProject.perform({ name: "TEST", goal: "300"}) }.to output("ERROR: project name already taken\n").to_stdout
     end
   end
 end

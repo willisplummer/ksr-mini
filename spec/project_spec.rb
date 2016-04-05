@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Backing" do
+describe "Project" do
   subject do
     Models::Project.new({ name: "TEST_PROJECT", goal: 500 })
   end

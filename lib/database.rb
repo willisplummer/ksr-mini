@@ -1,17 +1,26 @@
 require 'json'
-require 'singleton'
 
 class Database
-  include Singleton
 
   TABLES = [:projects, :backings]
-  FILE_PATH = 'lib/db.json'
+
+  def self.filepath=(filepath)
+    @@filepath = filepath
+  end
+
+  def self.filepath
+    @@filepath ||= 'lib/db.json'
+  end
+
+  def self.instance
+    @@instance ||= new
+  end
 
   class TableDoesNotExistError < ArgumentError; end
 
   def initialize
-    if File.exist?(FILE_PATH)
-      data = JSON.parse(File.read(FILE_PATH))
+    if File.exist?(self.class.filepath)
+      data = JSON.parse(File.read(self.class.filepath))
         .reduce({}){ |memo, (k,v)| memo[k.to_sym] = v; memo }
       data[:projects] = data[:projects].reduce([]){ |accum, v| accum << Models::Project.new(v) }
       data[:backings] = data[:backings].reduce([]){ |accum, v| accum << Models::Backing.new(v) }
@@ -31,13 +40,20 @@ class Database
     save
   end
 
+  def reset!
+    File.delete(self.class.filepath) if File.exist?(self.class.filepath)
+    @@instance = nil
+  end
+
   protected
 
   def save
-    File.write(FILE_PATH, JSON.dump(@data))
+    File.write(self.class.filepath, JSON.dump(@data))
   end
 
 end
 
-# fix the tests
-# refactor the luhn method
+# fix + refactor the luhn method
+# write tests for database
+# make tests more efficient
+# check w ron re singleton db setup
