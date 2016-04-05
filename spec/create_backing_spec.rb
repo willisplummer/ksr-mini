@@ -27,7 +27,7 @@ describe "Create Backing" do
       expect(Database.instance.table(:backings)[0]).to be_nil
     end
     it "returns the correct error message" do
-      expect { Behaviors::CreateBacking.perform({ name: "USER", project: "TEST", cc: "79927398713567890123445", amount: "150" }) }.to output("ERROR: this card is invalid\n").to_stdout
+      expect { Behaviors::CreateBacking.perform({ name: "USER", project: "TEST", cc: "79927398713567890123445", amount: "150" }) }.to output(/ERROR: this card is invalid/).to_stdout
     end
   end
 
@@ -39,13 +39,13 @@ describe "Create Backing" do
       expect(Database.instance.table(:backings)[0]).to be_nil
     end
     it "returns the correct error message" do
-      expect { Behaviors::CreateBacking.perform({ name: "USER", project: "TEST", cc: "7992T7398713", amount: "150" }) }.to output("ERROR: this card is invalid\n").to_stdout
+      expect { Behaviors::CreateBacking.perform({ name: "USER", project: "TEST", cc: "7992T7398713", amount: "150" }) }.to output(/ERROR: this card is invalid/).to_stdout
     end
   end
 
   context "when CC does not pass Luhn-10" do
     before (:each) do
-      Behaviors::CreateBacking.perform({ name: "USER", project: "TEST", cc: "79927398714", amount: "150" })
+      Behaviors::CreateBacking.perform({ name: "USER", project: "TEST", cc: "7992T7398714", amount: "150" })
     end
     it "does not create a new backing" do
       expect(Database.instance.table(:backings)[0]).to be_nil
@@ -57,62 +57,62 @@ describe "Create Backing" do
 
   context "when user name is too short" do
     before (:each) do
-      Behaviors::CreateBacking.perform({ name: "USE", project: "TEST", cc: "79927398714", amount: "150" })
+      Behaviors::CreateBacking.perform({ name: "USE", project: "TEST", cc: "79927398713", amount: "150" })
     end
     it "does not create a new backing" do
       expect(Database.instance.table(:backings)[0]).to be_nil
     end
     it "returns the correct error message" do
-      expect { Behaviors::CreateBacking.perform({ name: "USE", project: "TEST", cc: "79927398714", amount: "150" }) }.to output("ERROR: backer name must be between 4 and 20 characters\n").to_stdout
+      expect { Behaviors::CreateBacking.perform({ name: "USE", project: "TEST", cc: "79927398713", amount: "150" }) }.to output("ERROR: backer name must be between 4 and 20 characters\n").to_stdout
     end
   end
 
   context "when user name is too long" do
     before (:each) do
-      Behaviors::CreateBacking.perform({ name: "THISUSERNAMEISWAYTOOLONGINSANELYLONG", project: "TEST", cc: "79927398714", amount: "150" })
+      Behaviors::CreateBacking.perform({ name: "THISUSERNAMEISWAYTOOLONGINSANELYLONG", project: "TEST", cc: "79927398713", amount: "150" })
     end
     it "does not create a new backing" do
       expect(Database.instance.table(:backings)[0]).to be_nil
     end
     it "returns the correct error message" do
-      expect { Behaviors::CreateBacking.perform({ name: "THISUSERNAMEISWAYTOOLONGINSANELYLONG", project: "TEST", cc: "79927398714", amount: "150" }) }.to output("ERROR: backer name must be between 4 and 20 characters\n").to_stdout
+      expect { Behaviors::CreateBacking.perform({ name: "THISUSERNAMEISWAYTOOLONGINSANELYLONG", project: "TEST", cc: "79927398713", amount: "150" }) }.to output("ERROR: backer name must be between 4 and 20 characters\n").to_stdout
     end
   end
 
   context "when credit card has been used by another backer" do
     before (:each) do
-      Behaviors::CreateBacking.perform({ name: "USER1", project: "TEST", cc: "79927398714", amount: "150" })
-      Behaviors::CreateBacking.perform({ name: "USER2", project: "TEST", cc: "79927398714", amount: "150" })
+      Behaviors::CreateBacking.perform({ name: "USER1", project: "TEST", cc: "79927398713", amount: "150" })
+      Behaviors::CreateBacking.perform({ name: "USER2", project: "TEST", cc: "79927398713", amount: "150" })
     end
     it "does not create a new backing" do
       expect(Database.instance.table(:backings)[1]).to be_nil
     end
     it "returns the correct error message" do
-      expect { Behaviors::CreateBacking.perform({ name: "USER2", project: "TEST", cc: "79927398714", amount: "150" }) }.to output("ERROR: card has already been added by another user\n").to_stdout
+      expect { Behaviors::CreateBacking.perform({ name: "USER2", project: "TEST", cc: "79927398713", amount: "150" }) }.to output("ERROR: card has already been added by another user\n").to_stdout
     end
   end
 
   context "when pledge is less than 1" do
     before (:each) do
-      Behaviors::CreateBacking.perform({ name: "USER", project: "TEST", cc: "79927398714", amount: "0" })
+      Behaviors::CreateBacking.perform({ name: "USER", project: "TEST", cc: "79927398713", amount: "0" })
     end
     it "does not create a new backing" do
       expect(Database.instance.table(:backings)[0]).to be_nil
     end
     it "returns the correct error message" do
-      expect { Behaviors::CreateBacking.perform({ name: "USER", project: "TEST", cc: "79927398714", amount: "0" }) }.to output("ERROR: pledge amount invalid; must be at least $1 and can only contain numbers\n").to_stdout
+      expect { Behaviors::CreateBacking.perform({ name: "USER", project: "TEST", cc: "79927398713", amount: "0" }) }.to output("ERROR: pledge amount invalid; must be at least $1 and can only contain numbers\n").to_stdout
     end
   end
 
   context "when pledge amount contains non-number characters" do
     before (:each) do
-      Behaviors::CreateBacking.perform({ name: "USER", project: "TEST", cc: "79927398714", amount: "100$" })
+      Behaviors::CreateBacking.perform({ name: "USER", project: "TEST", cc: "79927398713", amount: "100$" })
     end
     it "does not create a new backing" do
       expect(Database.instance.table(:backings)[0]).to be_nil
     end
     it "returns the correct error message" do
-      expect { Behaviors::CreateBacking.perform({ name: "USER", project: "TEST", cc: "79927398714", amount: "100$" }) }.to output("ERROR: pledge amount invalid; must be at least $1 and can only contain numbers\n").to_stdout
+      expect { Behaviors::CreateBacking.perform({ name: "USER", project: "TEST", cc: "79927398713", amount: "100$" }) }.to output("ERROR: pledge amount invalid; must be at least $1 and can only contain numbers\n").to_stdout
     end
   end
 

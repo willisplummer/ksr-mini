@@ -45,11 +45,9 @@ module Models
 
     def luhn?
       sum = 0
-
-      cc = cc.to_s
-      cc = "0#{cc}" if cc.length % 2 == 0
-
-      digits = cc.split("")
+      string = cc.to_s
+      string = "0" + string if string.length % 2 == 0
+      digits = string.split("")
       digits.each_with_index do |n, i|
         if i % 2 == 0
           sum += n.to_i
@@ -59,7 +57,6 @@ module Models
           double.each { |d| sum += d.to_i }
         end
       end
-
       sum % 10 == 0
     end
   end
