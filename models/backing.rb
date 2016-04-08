@@ -11,6 +11,7 @@ module Models
       valid_pledge?: "ERROR: pledge amount invalid; must be at least $1 and can only contain numbers",
       valid_cents?: "ERROR: pledge amount contains too many decimal places"
     }
+    VALID_ATTRIBUTES = [:project, :cc, :name, :amount]
 
     attr_accessor :project, :cc, :amount
 
@@ -44,18 +45,10 @@ module Models
     end
 
     def luhn?
-      sum = 0
-      string = cc.to_s
-      string = "0" + string if string.length % 2 == 0
-      digits = string.split("")
-      digits.each_with_index do |n, i|
-        if i % 2 == 0
-          sum += n.to_i
-        else
-          double = n.to_i * 2
-          double = double.to_s.split("")
-          double.each { |d| sum += d.to_i }
-        end
+      digits = cc.to_s.chars
+      digits.unshift("0") if digits.length % 2 == 0
+      sum = digits.each_with_index.inject(0) do |memo, (n, i)|
+        i % 2 == 0 ? memo += n.to_i : "#{n.to_i * 2}".chars.each { |v| memo += v.to_i }; memo
       end
       sum % 10 == 0
     end

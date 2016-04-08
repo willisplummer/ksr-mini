@@ -22,19 +22,30 @@ module Models
     end
 
     def validate
-      self.class::VALIDATIONS
-        .inject([]) {|accum, (m,msg)| send(m) ? accum : accum << msg }
-        .each {|error| puts error }
-        .empty?
+      if all_attributes_present?
+        self.class::VALIDATIONS
+          .inject([]) {|accum, (m,msg)| send(m) ? accum : accum << msg }
+          .each {|error| puts error }
+          .empty?
+      else
+        puts "ERROR: missing arguments; type 'help' for more info"
+      end
     end
 
     def to_json(options={})
-      self.instance_variables
-        .inject({}){ |accum, v| accum[v.to_s.delete("@")] = self.instance_variable_get(v); accum }
+      self.class::VALID_ATTRIBUTES
+        .inject({}){ |accum, v| accum[v] = self.send(v); accum }
         .to_json
+    end
+
+    def self.from_json(data)
+      formatted_hash = data.reduce({}){ |accum, (k, v)| accum[k.to_sym] = v; accum}
+      new(formatted_hash)
+    end
+
+    def all_attributes_present?
+      self.class::VALID_ATTRIBUTES
+        .all?{|v| !self.send(v).nil?}
     end
   end
 end
-
-#define valid_attributes for models in an array in a class level method
-#instead of looping through attributes in initialize use the class level method

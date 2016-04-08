@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "Create Project Behavior" do
   before (:each) do
     Database.filepath = 'lib/testdb.json'
-    Database.instance.reset!
+    Database.reset!
   end
 
   context "When Project name is valid length" do

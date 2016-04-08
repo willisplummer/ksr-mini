@@ -13,20 +13,29 @@ class Database
   end
 
   def self.instance
-    @@instance ||= new
+    @@instance ||= load
+  end
+
+  def self.reset!
+    File.delete(self.filepath) if File.exist?(self.filepath)
+    @@instance = nil
+  end
+
+  def self.load
+    if File.exist?(self.filepath)
+      data = JSON.parse(File.read(self.filepath))
+        .reduce({}){ |memo, (k,v)| memo[k.to_sym] = v; memo }
+      data[:projects] = data[:projects].reduce([]){ |accum, v| accum << Models::Project.from_json(v) }
+      data[:backings] = data[:backings].reduce([]){ |accum, v| accum << Models::Backing.from_json(v) }
+    else
+      data = Hash[TABLES.map { |x| [x, []] }]
+    end
+    new(data)
   end
 
   class TableDoesNotExistError < ArgumentError; end
 
-  def initialize
-    if File.exist?(self.class.filepath)
-      data = JSON.parse(File.read(self.class.filepath))
-        .reduce({}){ |memo, (k,v)| memo[k.to_sym] = v; memo }
-      data[:projects] = data[:projects].reduce([]){ |accum, v| accum << Models::Project.new(v) }
-      data[:backings] = data[:backings].reduce([]){ |accum, v| accum << Models::Backing.new(v) }
-    else
-      data = Hash[TABLES.map { |x| [x, []] }]
-    end
+  def initialize(data)
     @data = data
   end
 
@@ -40,11 +49,6 @@ class Database
     save
   end
 
-  def reset!
-    File.delete(self.class.filepath) if File.exist?(self.class.filepath)
-    @@instance = nil
-  end
-
   protected
 
   def save
@@ -52,8 +56,3 @@ class Database
   end
 
 end
-
-# fix + refactor the luhn method
-# write tests for database
-# make tests more efficient
-# check w ron re singleton db setup

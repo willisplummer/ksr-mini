@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "Create Backing" do
   before (:each) do
     Database.filepath = 'lib/testdb.json'
-    Database.instance.reset!
+    Database.reset!
     Behaviors::CreateProject.perform({ name: "TEST", goal: "300"})
   end
 

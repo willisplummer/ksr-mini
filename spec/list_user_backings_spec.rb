@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "List User Backings" do
   before (:each) do
     Database.filepath = 'lib/testdb.json'
-    Database.instance.reset!
+    Database.reset!
     Behaviors::CreateProject.perform({ name: "TEST1", goal: "300"})
     Behaviors::CreateProject.perform({ name: "TEST2", goal: "300"})
     Behaviors::CreateBacking.perform({ name: "USER", project: "TEST1", cc: "79927398713", amount: "150" })

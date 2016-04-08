@@ -22,7 +22,7 @@ class App
 
   def initialize
     puts "now running mini-ksr"
-    Database.filepath = 'lib/db.json'
+    Database.load
     self.run
   end
 
@@ -37,7 +37,6 @@ class App
     handle_input(gets.chomp.downcase.split(" "))
   end
 
-# currently there's an error when user types 'project' without all the attributes
   def handle_input(input)
     case input[0]
     when "project"
@@ -57,3 +56,6 @@ class App
     end
   end
 end
+
+# write tests for database
+# make tests more efficient (in terms of just focusing on their own stuff)

@@ -5,6 +5,7 @@ module Models
       valid_length?: "ERROR: project name must be between 4 and 20 characters",
       name_not_taken?: "ERROR: project name already taken"
     }
+    VALID_ATTRIBUTES = [:goal, :name]
 
     attr_accessor :goal, :raised
 
