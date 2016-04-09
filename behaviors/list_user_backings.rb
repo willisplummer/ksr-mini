@@ -3,7 +3,7 @@ module Behaviors
     attr_accessor :name
 
     def perform
-      backings = Database.instance.table(:backings).find_all { |v| v.name == name }
+      backings = Database.instance.find_all(:backings) { |v| v[:name] == name }
       if backings == []
         puts "ERROR: user does not exist"
       else

@@ -11,8 +11,7 @@ module Models
 
     def raised
       raised = Database.instance
-        .table(:backings)
-        .find_all { |v| v.project == name }
+        .find_all(:backings) { |v| v[:project] == name }
         .inject(0) { |sum, backing| sum + backing.amount.to_f }
     end
 
@@ -29,7 +28,7 @@ module Models
 # validations
 
     def name_not_taken?
-      match = Database.instance.table(:projects).find { |v| v.name == name }
+      match = Database.instance.find(:projects) { |v| v[:name] == name }
       match.nil?
     end
 

@@ -8,7 +8,7 @@ module Models
 
     def save
       begin
-        if validate
+        if check_attributes && validate
           Database.instance.add(self.class::TABLE, self)
           true
         else
@@ -22,14 +22,10 @@ module Models
     end
 
     def validate
-      if all_attributes_present?
-        self.class::VALIDATIONS
-          .inject([]) {|accum, (m,msg)| send(m) ? accum : accum << msg }
-          .each {|error| puts error }
-          .empty?
-      else
-        puts "ERROR: missing arguments; type 'help' for more info"
-      end
+      self.class::VALIDATIONS
+        .inject([]) {|accum, (m,msg)| send(m) ? accum : accum << msg }
+        .each {|error| puts error }
+        .empty?
     end
 
     def to_json(options={})
@@ -40,7 +36,15 @@ module Models
 
     def self.from_json(data)
       formatted_hash = data.reduce({}){ |accum, (k, v)| accum[k.to_sym] = v; accum}
-      new(formatted_hash)
+      # new(formatted_hash)
+    end
+
+    def check_attributes
+      unless all_attributes_present?
+        puts "ERROR: missing arguments; type 'help' for more info"
+        false
+      end
+      true
     end
 
     def all_attributes_present?

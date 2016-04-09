@@ -122,7 +122,7 @@ describe "Create Backing" do
       Behaviors::CreateBacking.perform({ name: "User2", project: "TEST", cc: "49927398716", amount: "35.50" })
     end
     it "adds them to the project's raised funds" do
-      expect(Database.instance.table(:projects)[0].raised).to eq(135.75)
+      expect(Database.instance.find(:projects){ |v| v[:name] == "TEST" }.raised).to eq(135.75)
     end
   end
 

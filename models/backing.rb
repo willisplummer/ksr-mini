@@ -18,7 +18,7 @@ module Models
 # validations
 
     def project_exists?
-      match = Database.instance.table(:projects).find { |v| v.name == project }
+      match = Database.instance.find(:projects) { |v| v[:name] == project }
       !match.nil?
     end
 
@@ -40,7 +40,7 @@ module Models
     end
 
     def unique_cc?
-      match = Database.instance.table(:backings).find { |v| v.cc.to_s == cc.to_s && v.name != name }
+      match = Database.instance.find(:backings) { |v| v[:cc].to_s == cc.to_s && v[:name] != name }
       match.nil?
     end
 
