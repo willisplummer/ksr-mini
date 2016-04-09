@@ -21,28 +21,28 @@ describe "Create Project Behavior" do
       Behaviors::CreateProject.perform({ name: "TE", goal: "300"})
     end
 
-    it "does not save the Project in PROJECTS" do
+    it "does not save the Project" do
       expect(Database.instance.table(:projects)[0]).to be_nil
     end
   end
 
-  context "When Project name is too long" do
+  context "when project name is too long" do
     before (:each) do
       Behaviors::CreateProject.perform({ name: "TESTOFTHISNAMEISWAYTOOLONG", goal: "300"})
     end
 
-    it "does not save the Project in PROJECTS" do
+    it "does not save the Project" do
       expect(Database.instance.table(:projects)[0]).to be_nil
     end
   end
 
-  context "When Project name is already taken" do
+  context "when project name is taken" do
     before (:each) do
       Behaviors::CreateProject.perform({ name: "TEST", goal: "300"})
       Behaviors::CreateProject.perform({ name: "TEST", goal: "300"})
     end
 
-    it "does not save the duplicate Project in PROJECTS" do
+    it "does not save the duplicate Project" do
       expect(Database.instance.table(:projects)[1]).to be_nil
     end
     it "returns the correct error message" do

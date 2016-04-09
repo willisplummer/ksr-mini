@@ -2,8 +2,7 @@ require 'json'
 
 class Database
 
-  TABLES = [:projects, :backings]
-  TABLES_TEST = {projects: "Models::Project", backings: "Models::Backing"}
+  TABLES = {projects: "Models::Project", backings: "Models::Backing"}
 
   def self.filepath=(filepath)
     @@filepath = filepath
@@ -30,11 +29,11 @@ class Database
     if File.exist?(self.filepath)
       data = JSON.parse(File.read(self.filepath))
         .reduce({}){ |memo, (k,v)| memo[k.to_sym] = v; memo }
-      TABLES.each do |table|
-        data[table] = data[table].reduce([]){ |accum, v| accum << Object.const_get(TABLES_TEST[table]).from_json(v) }
+      TABLES.each do |table, class_string|
+        data[table] = data[table].reduce([]){ |accum, v| accum << Object.const_get(class_string).from_json(v) }
       end
     else
-      data = Hash[TABLES.map { |x| [x, []] }]
+      data = Hash[TABLES.map { |k, v| [k, []] }]
     end
     new(data)
   end
@@ -46,7 +45,7 @@ class Database
   end
 
   def table(table)
-    raise(TableDoesNotExistError, "the specified table '#{table}' does not exist") unless TABLES.include?(table)
+    raise(TableDoesNotExistError, "the specified table '#{table}' does not exist") unless TABLES.has_key?(table)
     @data[table]
   end
 
@@ -58,13 +57,13 @@ class Database
   def find(table, &block)
     Database.reload!
     attributes = Database.instance.table(table).find &block
-    Object.const_get(TABLES_TEST[table]).new(attributes) unless attributes.nil?
+    Object.const_get(TABLES[table]).new(attributes) unless attributes.nil?
   end
 
   def find_all(table, &block)
     Database.reload!
     results = Database.instance.table(table).find_all &block
-    results == [] ? results : results.inject([]) { |accum, attributes| accum << Object.const_get(TABLES_TEST[table]).new(attributes) }
+    results == [] ? results : results.inject([]) { |accum, attributes| accum << Object.const_get(TABLES[table]).new(attributes) }
   end
 
   protected
@@ -72,5 +71,4 @@ class Database
   def save
     File.write(self.class.filepath, JSON.dump(@data))
   end
-
 end

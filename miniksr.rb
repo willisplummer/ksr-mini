@@ -57,5 +57,6 @@ class App
   end
 end
 
+# check w/ ryan about instantiating objects from json
 # write tests for database
 # make tests more efficient (in terms of just focusing on their own stuff)
